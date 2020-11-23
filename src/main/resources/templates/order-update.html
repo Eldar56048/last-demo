@@ -1,0 +1,22 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml"  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <title th:text="${title}"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body>
+
+<header th:insert="blocks/header :: header"></header>
+
+<div class="container" th:each="el:${order}">
+    <form method="post" th:action="@{/orders/}+${el.id}+@{/update}">
+        <input type="hidden" name="id" th:value="${el.id}">
+        <textarea required  name="what_done" placeholder="Что сделано" class="form-control"></textarea><br>
+        <input type="number" required placeholder="Цена" name="price" class="form-control"><br>
+        <button type="submit" class="btn btn-success">Добавить</button>
+    </form>
+</div>
+<footer th:insert="blocks/footer::footer"></footer>
+</body>
+</html>

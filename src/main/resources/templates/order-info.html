@@ -1,0 +1,36 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml"  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <title th:text="${title}"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body>
+
+<header th:insert="blocks/header :: header"></header>
+<main role="main" class="container">
+    <div th:each="orderOne:${order}" class="jumbotron">
+        <h3 th:text='${"Имя клиента: "+orderOne.client_name}'/>
+        <h3 th:text='${"Номер клиента: "+orderOne.client_number}'/>
+        <h3 th:text='${"Дата приема: "+orderOne.accepted_date.toString()}'/>
+        <h3 th:text='${"Проблема: "+orderOne.problem}'/>
+        <h3 th:text='${"Кто принял: "+orderOne.acceptedUser.getFname()+" "+orderOne.acceptedUser.getLname()}'/>
+        <h3  th:if='${orderOne.status.toString().equals("NOTDONE")}'>Статус: Не Сделано</h3>
+        <h3  th:if='${orderOne.status.toString().equals("DONE")}'>Статус: Сделано</h3>
+        <h3  th:if='${orderOne.status.toString().equals("GIVEN")}'>Статус: Выдано</h3>
+        <h3 th:if="${orderOne.what_done!=null}" th:text='${"Что сделано: "+orderOne.what_done}'/>
+        <h3 th:if="${orderOne.price>0}" th:text='${"Цена: "+orderOne.price}'/>
+        <h3 th:if="${orderOne.doneUser!=null}" th:text='${"Кто сделал: "+orderOne.doneUser.getFname()+" "+orderOne.doneUser.getLname()}'/>
+        <h3 th:if="${orderOne.giveUser!=null}" th:text='${"Кто отдал: "+orderOne.giveUser.getFname()+" "+orderOne.giveUser.getLname()}'/>
+        <h3 th:if="${orderOne.gave_date!=null}" th:text='${"Забрал: "+orderOne.gave_date.toString()}'/>
+        <a th:href="@{/orders/}+${orderOne.id}+@{/update}"><button type="button" class="btn btn-primary">Сделал</button></a>
+        <a th:href="@{/orders/}+${orderOne.id}+@{/given}"><button type="button" class="btn btn-primary">Отдал</button></a>
+        <a th:href="@{/orders/}+${orderOne.id}+@{/remove}"><button type="button" class="btn btn-danger">Удалить</button></a>
+    </div>
+    <div th:if="${order.size()==0}" class="jumbotron">
+        <h1>Не найдено</h1>
+    </div>
+</main>
+    <footer th:insert="blocks/footer::footer"></footer>
+</body>
+</html>

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Login Page</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link href="css/signin.css">
+</head>
+<body>
+<header th:insert="blocks/header :: header"></header>
+<div class="container">
+<div th:if="${param.error}">
+    Invalid username and password.
+</div>
+<div th:if="${param.logout}">
+    You have been logged out.
+</div>
+<h1>Добавить пользователя</h1>
+<form th:action="@{/reg}" method="post">
+    <input type="text" class="form-control" placeholder="username" required name="username"/><br>
+    <input type="password" class="form-control" placeholder="password" required name="password"/><br>
+    <input type="text" class="form-control" placeholder="First Name" required name="fname"/><br>
+    <input type="text" class="form-control" placeholder="Last Name" required name="lname"/><br>
+    <button type="submit" class="btn btn-success">Добавить пользователя</button>
+</form>
+</div>
+<footer th:insert="blocks/footer::footer"></footer>
+</body>
+</html>
