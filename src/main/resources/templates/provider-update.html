@@ -1,0 +1,22 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml"  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <title>Изменить Сервис</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body>
+
+<header th:insert="blocks/header :: header"></header>
+<div class="container" th:each="el:${provider}">
+    <h2 th:text='${"Обновление Информаций о поставщике под ID: "+el.id}'/>
+    <form method="post" th:action="@{/providers/}+${el.id}+@{/update}">
+        <input type="text" name="name" th:value="${el.provider_name}" placeholder="Имя Поставщика" required class="form-control"><br>
+        <input type="text" name="address" th:value="${el.provider_address}" placeholder="Адрес Поставщика" required class="form-control"><br>
+        <input type="number" name="phone" th:value="${el.provider_telephone}" placeholder="Телефон Поставщика" required class="form-control"><br>
+        <button type="submit" class="btn btn-primary">Update</button>
+    </form>
+</div>
+<footer th:insert="blocks/footer::footer"></footer>
+</body>
+</html>

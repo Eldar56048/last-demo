@@ -1,0 +1,55 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml"  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <title>Все Товары</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body>
+
+<header th:insert="blocks/header :: header"></header>
+
+<main role="main">
+
+    <section class="jumbotron text-center">
+        <div class="container">
+            <form th:action="@{/products/add}" method="post">
+                <input type="text" name="product_name" placeholder="Имя Товара" required class="form-control"><br>
+                <textarea  name="description" placeholder="Описание Товара" required class="form-control"></textarea><br>
+                <input type="number" name="price" placeholder="Цена Товара" required class="form-control"><br>
+                <button type="submit" class="btn btn-success">Добавить</button><br>
+            </form>
+        </div>
+    </section>
+
+    <div class="container">
+
+        <div class="row">
+            <table class="table table-hover table-dark">
+                <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Product Name</th>
+                    <th scope="col">Product Description</th>
+                    <th scope="col">Price</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="el:${products}">
+                    <!--                        <th scope="row" th:text="${el.id}"/>-->
+                    <th><a th:text="${el.id}" th:href="@{/products/}+${el.id}"/></th>
+                    <td th:text="${el.product_name}"/>
+                    <td th:text="${el.description}"/>
+                    <td th:text="${el.price}"/>
+                </tr>
+
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+
+</main>
+<footer th:insert="blocks/footer::footer"></footer>
+</body>
+</html>

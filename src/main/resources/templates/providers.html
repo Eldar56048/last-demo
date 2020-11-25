@@ -1,0 +1,56 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml"  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <title>Поставщики</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body>
+
+<header th:insert="blocks/header :: header"></header>
+
+<main role="main">
+
+    <section class="jumbotron text-center">
+        <div class="container">
+            <h1>Добавить провайдера</h1>
+            <form th:action="@{/providers/add}" method="post">
+                <input type="text" name="name" placeholder="Имя Поставщика" required class="form-control"><br>
+                <input type="text" name="address" placeholder="Адрес Поставщика" required class="form-control"><br>
+                <input type="number" name="telephone" placeholder="Телефон Поставщика" required class="form-control"><br>
+                <button type="submit" class="btn btn-success">Добавить</button><br>
+            </form>
+        </div>
+    </section>
+
+    <div class="container">
+
+        <div class="row">
+            <table class="table table-hover table-dark">
+                <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Имя Поставщика</th>
+                    <th scope="col">Адрес Поставщика</th>
+                    <th scope="col">Телефон Поставщика</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="el:${providers}">
+                    <!--                        <th scope="row" th:text="${el.id}"/>-->
+                    <th><a th:text="${el.id}" th:href="@{/providers/}+${el.id}"/></th>
+                    <td th:text="${el.provider_name}"/>
+                    <td th:text="${el.provider_address}"/>
+                    <td th:text="${el.provider_telephone}"/>
+                </tr>
+
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+
+</main>
+<footer th:insert="blocks/footer::footer"></footer>
+</body>
+</html>

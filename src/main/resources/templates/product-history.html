@@ -1,0 +1,86 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml"  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <title>Все Товары</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body>
+
+<header th:insert="blocks/header :: header"></header>
+
+<main role="main">
+
+    <!--<section class="jumbotron text-center">
+        <div class="container">
+            <form th:action="@{/products/add}" method="post">
+                <input type="text" name="product_name" placeholder="Имя Товара" required class="form-control"><br>
+                <textarea  name="description" placeholder="Описание Товара" required class="form-control"></textarea><br>
+                <input type="number" name="price" placeholder="Цена Товара" required class="form-control"><br>
+                <button type="submit" class="btn btn-success">Добавить</button><br>
+            </form>
+        </div>
+    </section>-->
+
+    <div class="container" th:if="${incoming!=null}">
+        <br>
+        <h1>История добавления</h1>
+        <br>
+        <div class="row">
+            <table class="table table-hover table-dark">
+                <thead>
+                <tr>
+                    <th scope="col">Наименование Продукта</th>
+                    <th scope="col">Поставщик</th>
+                    <th scope="col">Цена</th>
+                    <th scope="col">Количество</th>
+                    <th scope="col">Сумма</th>
+                    <th scope="col">Дата</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="el:${incoming}">
+                    <th><a style="color: white" th:text="${el.product.product_name}" th:href="@{/products/}+${el.product.id}"/></th>
+                    <td><a style="color: white" th:text="${el.provider.provider_name}" th:href="@{/providers/}+${el.provider.id}"/></td>
+                    <td th:text="${el.price}"/>
+                    <td th:text="${el.quantity}"/>
+                    <td th:text="${el.total}"/>
+                    <td th:text="${el.getDateByFormat()}"/>
+                </tr>
+
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+
+    <div class="container" th:if="${recieving!=null}">
+        <br>
+        <h1>Взяли со склада</h1>
+        <br>
+        <div class="row">
+            <table class="table table-hover table-dark">
+                <thead>
+                <tr>
+                    <th scope="col">Наименование Продукта</th>
+                    <th scope="col">Количество</th>
+                    <th scope="col">Для какого заказа</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="el:${recieving}">
+                    <th><a style="color: white" th:text="${el.orderItem.product.product_name}" th:href="@{/products/}+${el.orderItem.product.id}"/></th>
+                    <td th:text="${el.orderItem.quantity}"/>
+                    <td><a style="color: white" th:text="${el.orderItem.order.id}" th:href="@{/orders/}+${el.orderItem.order.id}"/></td>
+                </tr>
+
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+
+</main>
+<footer th:insert="blocks/footer::footer"></footer>
+</body>
+</html>

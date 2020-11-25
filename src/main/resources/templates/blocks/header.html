@@ -4,11 +4,14 @@
     <h5 class="my-0 mr-md-auto font-weight-normal">WebPortal</h5>
     <nav class="my-2 my-md-0 mr-md-3">
         <a class="p-2 text-dark" href="/login">Login</a>
-        <a sec:authorize="isAuthenticated()" class="p-2 text-dark" href="/orders">Orders</a>
+        <a sec:authorize="isAuthenticated()" class="p-2 text-dark" href="/orders">Заказы</a>
+        <a sec:authorize="isAuthenticated()" class="p-2 text-dark" href="/services">Услуги</a>
+        <a sec:authorize="isAuthenticated()" class="p-2 text-dark" href="/products">Товары</a>
+        <a sec:authorize="isAuthenticated()" class="p-2 text-dark" href="/providers">Поставщики</a>
     </nav>
     <div sec:authorize="isAuthenticated()">
     <form th:action="@{/logout}" method="post">
-        <input type="submit" class="btn btn-danger" value="Sign Out"/>
+        <input type="submit" class="btn btn-danger" value="Выйти"/>
     </form>
     </div>
 </div>

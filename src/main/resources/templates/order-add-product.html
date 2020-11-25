@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml"  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
-    <title th:text="${title}"/>
+    <title>Добавление Товара</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 </head>
@@ -10,13 +10,14 @@
 <header th:insert="blocks/header :: header"></header>
 
 <div class="container" style="text-align: center">
-    <form method="post" th:action="@{/orders/}+${order}+@{/add}">
+    <h2 th:if="${param.message!=null}" th:text="${param.message}"/>
+    <form method="post"  th:action="@{/orders/}+${order.id}+@{/add/product}">
         <br>
-        <h2>Добавление услуги</h2>
+        <h2>Добавление Товара</h2>
         <br>
-        <input class="form-control" list="services" name="service_id" required id="service" placeholder="Выберите Сервис"><br>
-        <datalist  id="services">
-            <option th:each="el:${services}" th:value="${el.id}" th:text='${el.service_name+" "+el.price}'/>
+        <input class="form-control" list="products" name="product_id" required id="service" placeholder="Выберите Товар"><br>
+        <datalist  id="products">
+            <option th:each="el:${products}" th:value="${el.id}" th:text='${el.product_name+" "+el.price}'/>
         </datalist><br>
         <input type="number" class="form-control" placeholder="Количество" name="quantity" required><br>
         <button style="width: 100%" type="submit" class="btn btn-success">Add</button>

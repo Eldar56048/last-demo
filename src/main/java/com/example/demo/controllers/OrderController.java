@@ -1,10 +1,8 @@
 package com.example.demo.controllers;
 
-import com.example.demo.models.Order;
-import com.example.demo.models.Status;
-import com.example.demo.models.User;
-import com.example.demo.repo.OrderRepository;
-import org.dom4j.rule.Mode;
+import com.example.demo.models.*;
+import com.example.demo.repo.*;
+import com.example.demo.smsc.Smsc;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -22,6 +20,16 @@ import java.util.Optional;
 public class OrderController {
     @Autowired
     private OrderRepository orderRepository;
+    @Autowired
+    private Smsc smsc;
+    @Autowired
+    private ServiceRepository serviceRepository;
+    @Autowired
+    private StorageRepository storageRepository;
+    @Autowired
+    private ProductRepository productRepository;
+    @Autowired
+    private RecievingHistoryRepository recievingHistoryRepository;
     @PostMapping("/orders/add")
     public String ordersAdd(@AuthenticationPrincipal User user,@RequestParam String client_name,@RequestParam String client_number, @RequestParam String problem, Model model){
         System.out.println("Hello");
@@ -41,21 +49,60 @@ public class OrderController {
     }
     @GetMapping("/orders/{id}/update")
     public String orderUpdateGet(@PathVariable(value = "id") long id,Model model){
-        Optional<Order> order = orderRepository.findById(id);
-        ArrayList<Order> result = new ArrayList<>();
-        order.ifPresent(result::add);
-        model.addAttribute("order",result);
+        model.addAttribute("order",id);
+        Iterable<Service> services = serviceRepository.findAll();
+        model.addAttribute("services",services);
         return "order-update";
     }
 
-    @PostMapping("/orders/{id}/update")
-    public String orderUpdatePost(@AuthenticationPrincipal User user,@PathVariable(value = "id") long id,@RequestParam String what_done, @RequestParam int price, Model model) throws ClassNotFoundException {
-        Order order = orderRepository.findById(id).orElseThrow(()-> new ClassNotFoundException());
-        order.setDoneUser(user);
-        order.setWhat_done(what_done);
-        order.setPrice(price);
-        order.setStatus(Status.DONE);
+    @GetMapping("/orders/{id}/add/product")
+    public String addProductToOrder(@PathVariable(value = "id") long id, Model model){
+        Order order = orderRepository.getAllById(id);
+        Iterable<Product> products = productRepository.findAll();
+        model.addAttribute("products",products);
+        model.addAttribute("order",order);
+        return "order-add-product";
+    }
+
+    @PostMapping("/orders/{id}/add/product")
+    public String addProductToOrderPost(@PathVariable(value = "id") long id,@RequestParam long product_id,@RequestParam int quantity, Model model){
+        Order order = orderRepository.getAllById(id);
+        Product product = productRepository.getAllById(product_id);
+        Storage storage = storageRepository.getAllByProductId(product_id);
+        if(storage.getQuantity()<quantity){
+            String message = "Не хватает количество товара вы требуете "+quantity+" товара но на складе доступно только "+storage.getQuantity();
+            model.addAttribute("message",message);
+            return "redirect:/orders/"+id+"/add/product";
+        }
+        OrderItem orderItem = new OrderItem(quantity,order,product);
+        order.addOrderItem(orderItem);
+        storage.setQuantity(storage.getQuantity()-quantity);
+        RecievingHistory recievingHistory = new RecievingHistory(orderItem);
+        storageRepository.save(storage);
         orderRepository.save(order);
+        recievingHistoryRepository.save(recievingHistory);
+        return "redirect:/orders/"+id;
+    }
+
+    @PostMapping("/orders/{id}/add")
+    public String addService(@PathVariable(value = "id")long id,@RequestParam long service_id,@RequestParam int quantity,Model model) throws ClassNotFoundException {
+        Order order = orderRepository.findById(id).orElseThrow(()-> new ClassNotFoundException());
+        Service service = serviceRepository.findById(service_id).orElseThrow(()->new ClassNotFoundException());
+        order.addOrderItem(new OrderItem(quantity,order,service));
+        orderRepository.save(order);
+        return "redirect:/orders/"+order.getId();
+    }
+    @GetMapping("/orders/{id}/done")
+    public String orderDone(@AuthenticationPrincipal User user,@PathVariable(value = "id") long id, Model model) throws ClassNotFoundException {
+        Order order = orderRepository.findById(id).orElseThrow(()-> new ClassNotFoundException());
+        order.setStatus(Status.DONE);
+        order.setDoneUser(user);
+        orderRepository.save(order);
+        String message = "Ваш заказ №"+order.getId()+" готов \n"+
+                "Кто сделал: "+order.getDoneUser().getFname()+" "+order.getDoneUser().getLname()+"\n"+
+                "Цена: "+order.getPrice()+"\n"+
+                "С уважением команда WEB-PORTAL";
+        smsc.send_sms(order.getClient_number(),message,0, "", "", 0, "", "");
         return "redirect:/orders/"+id;
     }
 
@@ -73,6 +120,26 @@ public class OrderController {
     public String orderRemove(@PathVariable(value = "id")long id,Model model) throws ClassNotFoundException {
         orderRepository.deleteById(id);
         return "redirect:/orders";
+    }
+
+    @GetMapping("/orders/{id}/remove/{item_id}")
+    public String orderItemsRemove(@PathVariable(value = "id")long id,@PathVariable(value = "item_id")long item_id,Model model) throws ClassNotFoundException {
+        Order order = orderRepository.findById(id).orElseThrow(()-> new ClassNotFoundException());
+        OrderItem orderItem = order.getOrderItemById(item_id);
+        if(orderItem.getService()!=null) {
+            order.removeOrderItemById(item_id);
+            orderRepository.save(order);
+        }
+        else{
+            order.removeOrderItemById(item_id);
+            RecievingHistory recievingHistory = recievingHistoryRepository.getAllByOrderItemId(orderItem.getId());
+            recievingHistoryRepository.deleteById(recievingHistory.getId());
+            Storage storage = storageRepository.getAllByProductId(orderItem.getProduct().getId());
+            storage.setQuantity(storage.getQuantity()+orderItem.getQuantity());
+            storageRepository.save(storage);
+            orderRepository.save(order);
+        }
+        return "redirect:/orders/"+order.getId();
     }
 
 }
