@@ -1,0 +1,21 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml"  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <title th:text="${title}"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body>
+
+<main role="main" class="container" style="display: flex;flex-direction: column;justify-content: center;align-items: center;height: auto;">
+    <h1 th:text='${"QRCode заказа №"+order.id}' />
+    <br>
+    <br>
+    <img th:src='${"http://api.qrserver.com/v1/create-qr-code/?data=http://localhost:8089/orders/"+order.id+"&size=400x400"}'>
+    <div th:if="${order==null}" class="jumbotron">
+        <h1>Не найдено</h1>
+    </div>
+</main>
+
+</body>
+</html>

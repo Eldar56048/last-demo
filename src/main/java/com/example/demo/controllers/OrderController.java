@@ -116,6 +116,7 @@ public class OrderController {
         return "redirect:/orders/"+id;
     }
 
+
     @GetMapping("/orders/{id}/remove")
     public String orderRemove(@PathVariable(value = "id")long id,Model model) throws ClassNotFoundException {
         orderRepository.deleteById(id);
@@ -140,6 +141,34 @@ public class OrderController {
             orderRepository.save(order);
         }
         return "redirect:/orders/"+order.getId();
+    }
+
+    @GetMapping("/orders/{id}/QRCode")
+    public String getOrderQRCode(@PathVariable(value = "id") long id,Model model){
+        Order order = orderRepository.getAllById(id);
+        model.addAttribute("order",order);
+        return "order-qr";
+    }
+
+    @GetMapping("/orders/search/notdone")
+    public String getNotDoneOrders(Model model){
+        Iterable<Order> orders = orderRepository.findAllByStatus(Status.NOTDONE);
+        model.addAttribute("orders",orders);
+        return "orders";
+    }
+
+    @GetMapping("/orders/search/done")
+    public String getDoneOrders(Model model){
+        Iterable<Order> orders = orderRepository.findAllByStatus(Status.DONE);
+        model.addAttribute("orders",orders);
+        return "orders";
+    }
+
+    @GetMapping("/orders/search/given")
+    public String getGivenOrders(Model model){
+        Iterable<Order> orders = orderRepository.findAllByStatus(Status.GIVEN);
+        model.addAttribute("orders",orders);
+        return "orders";
     }
 
 }

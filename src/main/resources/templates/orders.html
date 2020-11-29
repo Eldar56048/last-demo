@@ -23,7 +23,11 @@
     </section>
 
         <div class="container">
-
+            <a th:href='${"/orders/search/notdone"}'><button class="btn btn-danger">Не сделано</button></a>
+            <a th:href='${"/orders/search/done"}'><button class="btn btn-primary">Сделано</button></a>
+            <a th:href='${"/orders/search/given"}'><button class="btn btn btn-success">Отдано</button></a>
+            <a th:href='${"/orders"}'><button class="btn btn btn-dark">Все</button></a>
+            <br><br>
             <div class="row">
                 <table class="table table-hover table-dark">
                     <thead>
