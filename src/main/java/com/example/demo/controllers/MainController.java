@@ -28,10 +28,7 @@ public class MainController {
         model.addAttribute("orders",orders);
         return "orders";
     }
-    @GetMapping("/client")
-    public String getClientPage(Model model){
-        return "main";
-    }
+
     @GetMapping("/")
     public String main(Model model){
         return "profile";
