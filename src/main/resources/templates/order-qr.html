@@ -11,7 +11,7 @@
     <h1 th:text='${"QRCode заказа №"+order.id}' />
     <br>
     <br>
-    <img th:src='${"http://api.qrserver.com/v1/create-qr-code/?data=http://localhost:8089/orders/"+order.id+"&size=400x400"}'>
+    <img th:src='${"http://api.qrserver.com/v1/create-qr-code/?data=http://webportal-service.herokuapp.com/orders/"+order.id+"&size=400x400"}'>
     <div th:if="${order==null}" class="jumbotron">
         <h1>Не найдено</h1>
     </div>
