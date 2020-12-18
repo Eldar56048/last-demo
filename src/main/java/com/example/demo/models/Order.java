@@ -140,8 +140,8 @@ public class Order {
         return problem;
     }
     public String getDateByFormat(){
-        SimpleDateFormat ft = new SimpleDateFormat ("E, MMM dd yyyy");
-        return ft.format(this.gave_date);
+        SimpleDateFormat ft = new SimpleDateFormat ("E, dd MMM yyyy HH:mm:ss");
+        return ft.format(this.accepted_date);
     }
     public void setProblem(String problem) {
         this.problem = problem;

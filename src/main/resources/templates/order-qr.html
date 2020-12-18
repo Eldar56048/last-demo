@@ -7,11 +7,11 @@
 </head>
 <body>
 
-<main role="main" class="container" style="display: flex;flex-direction: column;justify-content: center;align-items: center;height: auto;">
-    <h1 th:text='${"QRCode заказа №"+order.id}' />
+<main role="main" class="container" style="display: flex;flex-direction: column;justify-content: left;align-items: flex-start;height: auto;">
+    <h1 style="font-size: small" th:text='${"QRCode заказа №"+order.id}' />
     <br>
     <br>
-    <img th:src='${"http://api.qrserver.com/v1/create-qr-code/?data=http://webportal-service.herokuapp.com/orders/"+order.id+"&size=400x400"}'>
+    <img th:src='${"http://api.qrserver.com/v1/create-qr-code/?data=http://webportal-service.herokuapp.com/orders/"+order.id+"&size=100x100"}'>
     <div th:if="${order==null}" class="jumbotron">
         <h1>Не найдено</h1>
     </div>

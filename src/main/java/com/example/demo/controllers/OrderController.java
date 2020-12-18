@@ -2,19 +2,21 @@ package com.example.demo.controllers;
 
 import com.example.demo.models.*;
 import com.example.demo.repo.*;
+import com.example.demo.services.OrderService;
 import com.example.demo.smsc.Smsc;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-
+import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @Controller
 public class OrderController {
@@ -30,6 +32,8 @@ public class OrderController {
     private ProductRepository productRepository;
     @Autowired
     private RecievingHistoryRepository recievingHistoryRepository;
+    @Autowired
+    private OrderService orderService;
     @PostMapping("/orders/add")
     public String ordersAdd(@AuthenticationPrincipal User user,@RequestParam String client_name,@RequestParam String client_number, @RequestParam String problem, Model model){
         System.out.println("Hello");
@@ -169,6 +173,28 @@ public class OrderController {
         Iterable<Order> orders = orderRepository.findAllByStatus(Status.GIVEN);
         model.addAttribute("orders",orders);
         return "orders";
+    }
+
+    @RequestMapping(value = "/listBooks", method = RequestMethod.GET)
+    public String listBooks(
+            Model model,
+            @RequestParam("page") Optional<Integer> page,
+            @RequestParam("size") Optional<Integer> size) {
+        int currentPage = page.orElse(1);
+        int pageSize = size.orElse(5);
+
+        Page<Order> orderPage = orderService.findPaginated(PageRequest.of(currentPage - 1, pageSize));
+
+        model.addAttribute("orderPage", orderPage);
+        int totalPages = orderPage.getTotalPages();
+        if (totalPages > 0) {
+            List<Integer> pageNumbers = IntStream.rangeClosed(1, totalPages)
+                    .boxed()
+                    .collect(Collectors.toList());
+            model.addAttribute("pageNumbers", pageNumbers);
+        }
+
+        return "listOrders";
     }
 
 }

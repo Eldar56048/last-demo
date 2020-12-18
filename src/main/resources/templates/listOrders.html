@@ -1,0 +1,56 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Главная Страница</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body>
+<header th:insert="blocks/header::header"/>
+
+
+<div class="container">
+    <a th:href='${"/orders/search/notdone"}'><button class="btn btn-danger">Не сделано</button></a>
+    <a th:href='${"/orders/search/done"}'><button class="btn btn-primary">Сделано</button></a>
+    <a th:href='${"/orders/search/given"}'><button class="btn btn btn-success">Отдано</button></a>
+    <a th:href='${"/orders"}'><button class="btn btn btn-dark">Все</button></a>
+    <br><br>
+    <div class="row">
+        <table class="table table-hover table-dark">
+            <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">First Name</th>
+                <th scope="col">Phone Number</th>
+                <th scope="col">Status</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="order, iStat : ${orderPage.content}"
+                th:style="${iStat.odd}? 'font-weight: bold;'"
+                th:alt-title="${iStat.even}? 'even' : 'odd'">
+                <!--                        <th scope="row" th:text="${el.id}"/>-->
+                <th><a th:text="${order.id}" th:href="@{/orders/}+${order.id}"/></th>
+                <td th:text="${order.client_name}"/>
+                <td th:text="${order.client_number}"/>
+                <td style="color: white" th:if='${order.status.toString().equals("NOTDONE")}'>Не Сделано</td>
+                <td style="color: yellow" th:if='${order.status.toString().equals("DONE")}'>Сделано</td>
+                <td style="color: lawngreen" th:if='${order.status.toString().equals("GIVEN")}'>Выдано</td>
+            </tr>
+
+            </tbody>
+        </table>
+
+    </div>
+    <div th:if="${orderPage.totalPages > 0}" class="pagination"
+         th:each="pageNumber : ${pageNumbers}">
+        <a th:href="@{/listBooks(size=${orderPage.size}, page=${pageNumber})}"
+           th:text=${pageNumber}
+           th:class="${pageNumber==orderPage.number + 1} ? active"></a>
+    </div>
+</div>
+
+
+<footer th:insert="blocks/footer::footer"></footer>
+</body>
+</html>

@@ -24,9 +24,13 @@ public class MainController {
     private PasswordEncoder passwordEncoder;
     @GetMapping("/orders")
     public String orders(Model model){
-        Iterable<Order> orders = orderRepository.findAll();
+        Iterable<Order> orders = orderRepository.findByOrderByIdDesc();
         model.addAttribute("orders",orders);
         return "orders";
+    }
+    @GetMapping("/client")
+    public String getClientPage(Model model){
+        return "main";
     }
     @GetMapping("/")
     public String main(Model model){

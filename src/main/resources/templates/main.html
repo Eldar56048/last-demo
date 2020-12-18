@@ -21,14 +21,13 @@
     <br>
     <hr>
     <br>
-    <section th:if="${order!=null}" th:each="orderOne:${order}" class="jumbotron text-center">
-        <h3 th:text='${"Дата приема: "+orderOne.accepted_date.toString()}'/>
+    <section th:if="${order!=null}" th:each="orderOne:${order}" class="jumbotron">
+        <h3 th:text='${"Дата приема: "+orderOne.getDateByFormat()}'/>
         <h3 th:text='${"Проблема: "+orderOne.problem}'/>
         <h3 th:text='${"Кто принял: "+orderOne.acceptedUser.getFname()+" "+orderOne.acceptedUser.getLname()}'/>
         <h3  th:if='${orderOne.status.toString().equals("NOTDONE")}'>Статус: Не Сделано</h3>
         <h3  th:if='${orderOne.status.toString().equals("DONE")}'>Статус: Сделано</h3>
         <h3  th:if='${orderOne.status.toString().equals("GIVEN")}'>Статус: Выдано</h3>
-        <h3 th:if="${orderOne.what_done!=null}" th:text='${"Что сделано: "+orderOne.what_done}'/>
         <h3 th:if="${orderOne.price>0}" th:text='${"Цена: "+orderOne.price}'/>
         <h3 th:if="${orderOne.doneUser!=null}" th:text='${"Кто сделал: "+orderOne.doneUser.getFname()+" "+orderOne.doneUser.getLname()}'/>
         <h3 th:if="${orderOne.giveUser!=null}" th:text='${"Кто отдал: "+orderOne.giveUser.getFname()+" "+orderOne.giveUser.getLname()}'/>
