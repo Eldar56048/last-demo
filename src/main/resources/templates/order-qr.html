@@ -18,7 +18,7 @@
         </div>
         <div class="col-8">
             <h1 style="font-size: small" th:text='${"Дата приема: "+order.getDateByFormat()}' />
-            <h1 style="font-size: small" th:text='${"Тип устройства: "+order.type.name+" "+order.model.name}' />
+            <h1 th:if="${order.model!=null&&order.type!=null}" style="font-size: small" th:text='${"Тип устройства: "+order.type.name+" "+order.model.name}' />
             <h1 style="font-size: small" th:text='${"Принял мастер: "+order.acceptedUser.lname+" "+order.acceptedUser.fname}' />
             <h1 style="font-size: small" th:text='${"Номер мастера: "+order.acceptedUser.phoneNumber}' />
         </div>
