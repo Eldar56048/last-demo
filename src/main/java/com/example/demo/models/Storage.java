@@ -1,12 +1,23 @@
 package com.example.demo.models;
 
+import org.hibernate.annotations.GenericGenerator;
+
 import javax.persistence.*;
 
 @Entity
 @Table(name = "storage_items")
 public class Storage {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(generator = "sequence-storage-generator")
+    @GenericGenerator(
+            name = "sequence-storage-generator",
+            strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator",
+            parameters = {
+                    @org.hibernate.annotations.Parameter(name = "sequence_name", value = "storage_sequence"),
+                    @org.hibernate.annotations.Parameter(name = "initial_value", value = "100"),
+                    @org.hibernate.annotations.Parameter(name = "increment_size", value = "1")
+            }
+    )
     private Long id;
     @OneToOne
     private Product product;

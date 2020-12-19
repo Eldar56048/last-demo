@@ -16,6 +16,14 @@
             <form th:action="@{/orders/add}" method="post">
                 <input type="text" name="client_name" placeholder="Имя клиента" required class="form-control"><br>
                 <input type="tel" name="client_number" placeholder="Номер клиента" required class="form-control"><br>
+                <input class="form-control" list="types" name="type_id" required id="type" placeholder="Выберите Тип устройства"><br>
+                <datalist  id="types">
+                    <option th:each="el:${types}" th:value="${el.id}" th:text='${el.name}'/>
+                </datalist><br>
+                <input class="form-control" list="models" name="model_id" required id="model" placeholder="Выберите Модель устройства"><br>
+                <datalist  id="models">
+                    <option th:each="el:${models}" th:value="${el.id}" th:text='${el.name}'/>
+                </datalist><br>
                 <textarea  name="problem" placeholder="Проблема" required class="form-control"></textarea><br>
                 <button type="submit" class="btn btn-success">Добавить</button><br>
             </form>

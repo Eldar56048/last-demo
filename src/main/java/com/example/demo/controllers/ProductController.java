@@ -70,6 +70,8 @@ public class ProductController {
     @GetMapping("/{id}/remove")
     public String deleteProduct(@PathVariable(value = "id")long id,Model model) throws ClassNotFoundException {
         Product product = productRepository.findById(id).orElseThrow(()-> new ClassNotFoundException());
+        Storage storage = storageRepository.getAllByProductId(product.getId());
+        storageRepository.delete(storage);
         productRepository.delete(product);
         return "redirect:/products";
     }

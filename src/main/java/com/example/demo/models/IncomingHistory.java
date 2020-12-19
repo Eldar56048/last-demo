@@ -1,16 +1,30 @@
 package com.example.demo.models;
 
+import org.hibernate.annotations.GenericGenerator;
+
 import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import org.hibernate.annotations.*;
+import org.hibernate.annotations.Parameter;
+
 import java.util.Date;
 
 @Entity
 @Table(name = "incoming_history")
 public class IncomingHistory {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(generator = "sequence-incoming-history-generator")
+    @GenericGenerator(
+            name = "sequence-incoming-history-generator",
+            strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator",
+            parameters = {
+                    @Parameter(name = "sequence_name", value = "incoming_sequence"),
+                    @Parameter(name = "initial_value", value = "100"),
+                    @Parameter(name = "increment_size", value = "1")
+            }
+    )
     private Long id;
     @ManyToOne
     private Product product;

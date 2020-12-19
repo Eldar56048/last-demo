@@ -12,13 +12,14 @@
     <div th:each="orderOne:${order}" class="jumbotron">
         <h3 th:text='${"Имя клиента: "+orderOne.client_name}'/>
         <h3 th:text='${"Номер клиента: "+orderOne.client_number}'/>
+        <h3 th:if="${orderOne.type!=null}" th:text='${"Тип устройства: "+orderOne.type.name}'/>
+        <h3 th:if="${orderOne.model!=null}" th:text='${"Модель устройства: "+orderOne.model.name}'/>
         <h3 th:text='${"Дата приема: "+orderOne.accepted_date.toString()}'/>
         <h3 th:text='${"Проблема: "+orderOne.problem}'/>
         <h3 th:text='${"Кто принял: "+orderOne.acceptedUser.getFname()+" "+orderOne.acceptedUser.getLname()}'/>
         <h3  th:if='${orderOne.status.toString().equals("NOTDONE")}'>Статус: Не Сделано</h3>
         <h3  th:if='${orderOne.status.toString().equals("DONE")}'>Статус: Сделано</h3>
         <h3  th:if='${orderOne.status.toString().equals("GIVEN")}'>Статус: Выдано</h3>
-
         <table th:if="${orderOne.items!=null}" class="table table-hover table-dark">
             <thead>
             <tr>

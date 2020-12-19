@@ -8,6 +8,8 @@
         <a sec:authorize="isAuthenticated()" class="p-2 text-dark" href="/services">Услуги</a>
         <a sec:authorize="isAuthenticated()" class="p-2 text-dark" href="/products">Товары</a>
         <a sec:authorize="isAuthenticated()" class="p-2 text-dark" href="/providers">Поставщики</a>
+        <a sec:authorize="isAuthenticated()" class="p-2 text-dark" href="/types">Устройства</a>
+        <a sec:authorize="isAuthenticated()" class="p-2 text-dark" href="/models">Модели</a>
     </nav>
     <div sec:authorize="isAuthenticated()">
     <form th:action="@{/logout}" method="post">

@@ -7,11 +7,26 @@
 </head>
 <body>
 
-<main role="main" class="container" style="display: flex;flex-direction: column;justify-content: left;align-items: flex-start;height: auto;">
+<main role="main" class="row" style="border-bottom: 1px solid black; padding-bottom: 10px">
+    <div class="col-4" style="text-align: center">
     <h1 style="font-size: small" th:text='${"QRCode заказа №"+order.id}' />
-    <br>
-    <br>
     <img th:src='${"http://api.qrserver.com/v1/create-qr-code/?data=http://webportal-service.herokuapp.com/orders/"+order.id+"&size=100x100"}'>
+    </div>
+    <div class="col-8 row" style="border-left: 1px solid black;">
+        <div class="w-100" style="text-align: center">
+        <h1 style="font-size: small" th:text='${"QRCode заказа №"+order.id}' />
+        </div>
+        <div class="col-8">
+            <h1 style="font-size: small" th:text='${"Дата приема: "+order.getDateByFormat()}' />
+            <h1 style="font-size: small" th:text='${"Тип устройства: "+order.type.name+" "+order.model.name}' />
+            <h1 style="font-size: small" th:text='${"Принял мастер: "+order.acceptedUser.lname+" "+order.acceptedUser.fname}' />
+            <h1 style="font-size: small" th:text='${"Номер мастера: "+order.acceptedUser.phoneNumber}' />
+        </div>
+            <div class="col-4">
+                <img th:src='${"http://api.qrserver.com/v1/create-qr-code/?data=http://webportal-service.herokuapp.com/client/"+order.id+"&size=100x100"}'>
+            </div>
+
+    </div>
     <div th:if="${order==null}" class="jumbotron">
         <h1>Не найдено</h1>
     </div>

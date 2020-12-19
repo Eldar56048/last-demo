@@ -1,24 +1,43 @@
 package com.example.demo.models;
 
 import com.example.demo.repo.OrderRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Parameter;
 
 import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
+
 
 @Entity
 @Table(name = "orders")
 public class Order {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(generator = "sequence-order-generator")
+    @GenericGenerator(
+            name = "sequence-order-generator",
+            strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator",
+            parameters = {
+                    @Parameter(name = "sequence_name", value = "order_sequence"),
+                    @Parameter(name = "initial_value", value = "100"),
+                    @Parameter(name = "increment_size", value = "1")
+            }
+    )
     private Long id;
     private String client_name,client_number,problem;
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItem> items;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "device_type")
+    private Type type;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "model_type")
+    private Model model;
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "accepted_user_id")
     private User acceptedUser;
@@ -32,13 +51,23 @@ public class Order {
     private int price;
     private Status status;
     public Order(){}
-    public Order(String client_name, String client_number, String problem, User acceptedUser) {
+    public Order(String client_name, String client_number, String problem, User acceptedUser,Type type,Model model) {
         this.client_name = client_name;
         this.client_number = client_number;
         this.problem = problem;
         this.acceptedUser = acceptedUser;
         this.accepted_date = new java.util.Date();
         this.status = Status.NOTDONE;
+        this.type = type;
+        this.model = model;
+    }
+
+    public Type getType() {
+        return type;
+    }
+
+    public void setType(Type type) {
+        this.type = type;
     }
 
     public List<OrderItem> getItems() {
@@ -130,6 +159,14 @@ public class Order {
 
     public String getClient_number() {
         return client_number;
+    }
+
+    public Model getModel() {
+        return model;
+    }
+
+    public void setModel(Model model) {
+        this.model = model;
     }
 
     public void setClient_number(String client_number) {

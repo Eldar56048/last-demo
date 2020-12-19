@@ -22,6 +22,8 @@ public class OrderController {
     @Autowired
     private OrderRepository orderRepository;
     @Autowired
+    private TypeRepository typeRepository;
+    @Autowired
     private Smsc smsc;
     @Autowired
     private ServiceRepository serviceRepository;
@@ -31,12 +33,15 @@ public class OrderController {
     private ProductRepository productRepository;
     @Autowired
     private RecievingHistoryRepository recievingHistoryRepository;
-
+    @Autowired
+    private ModelRepository modelRepository;
     @PostMapping("/orders/add")
-    public String ordersAdd(@AuthenticationPrincipal User user,@RequestParam String client_name,@RequestParam String client_number, @RequestParam String problem, Model model){
+    public String ordersAdd(@AuthenticationPrincipal User user,@RequestParam String client_name,@RequestParam String client_number, @RequestParam String problem, @RequestParam Long type_id, @RequestParam Long model_id, Model model){
         System.out.println("Hello");
         System.out.println(client_name+" "+client_number+" "+problem);
-        Order order = new Order(client_name,client_number,problem,user);
+        Type type = typeRepository.getAllById(type_id);
+        com.example.demo.models.Model model1 = modelRepository.getAllById(model_id);
+        Order order = new Order(client_name,client_number,problem,user,type,model1);
         orderRepository.save(order);
         return "redirect:/orders";
     }

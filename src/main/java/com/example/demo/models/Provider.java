@@ -1,5 +1,8 @@
 package com.example.demo.models;
 
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Parameter;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -8,7 +11,16 @@ import javax.persistence.Id;
 @Entity
 public class Provider {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(generator = "sequence-provider-generator")
+    @GenericGenerator(
+            name = "sequence-provider-generator",
+            strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator",
+            parameters = {
+                    @Parameter(name = "sequence_name", value = "provider_sequence"),
+                    @Parameter(name = "initial_value", value = "100"),
+                    @Parameter(name = "increment_size", value = "1")
+            }
+    )
     private Long id;
     private String provider_name,provider_address,provider_telephone;
     public Provider(){}
