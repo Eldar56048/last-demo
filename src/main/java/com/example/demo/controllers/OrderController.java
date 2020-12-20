@@ -6,6 +6,7 @@ import com.example.demo.smsc.Smsc;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -123,7 +124,7 @@ public class OrderController {
         return "redirect:/orders/"+id;
     }
 
-
+    @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/orders/{id}/remove")
     public String orderRemove(@PathVariable(value = "id")long id,Model model) throws ClassNotFoundException {
         orderRepository.deleteById(id);

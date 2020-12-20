@@ -3,6 +3,7 @@ package com.example.demo.controllers;
 import com.example.demo.models.Service;
 import com.example.demo.repo.ServiceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -11,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 @Controller
+@PreAuthorize("hasAuthority('ADMIN')")
 @RequestMapping("/services")
 public class ServiceController {
     @Autowired

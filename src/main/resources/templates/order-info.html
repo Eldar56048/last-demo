@@ -64,7 +64,7 @@
         <a th:href="@{/orders/}+${orderOne.id}+@{/add/product}"><button type="button" class="btn btn-primary">Добавить Товар</button></a>
         <a th:href="@{/orders/}+${orderOne.id}+@{/done}"><button type="button" class="btn btn-warning">Сделал</button></a>
         <a th:href="@{/orders/}+${orderOne.id}+@{/given}"><button type="button" class="btn btn-success">Отдал</button></a>
-        <a th:href="@{/orders/}+${orderOne.id}+@{/remove}"><button type="button" class="btn btn-danger">Удалить</button></a>
+        <a sec:authorize="hasAuthority('ADMIN')" th:href="@{/orders/}+${orderOne.id}+@{/remove}"><button type="button" class="btn btn-danger">Удалить</button></a>
         <a th:href="@{/orders/}+${orderOne.id}+@{/QRCode}"><button type="button" class="btn btn-primary">QRCode</button></a>
     </div>
     <div th:if="${order.size()==0}" class="jumbotron">

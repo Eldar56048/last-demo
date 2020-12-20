@@ -3,6 +3,7 @@ package com.example.demo.controllers;
 import com.example.demo.models.*;
 import com.example.demo.repo.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -12,6 +13,7 @@ import java.util.Optional;
 
 @Controller
 @RequestMapping("/products")
+@PreAuthorize("hasAuthority('ADMIN')")
 public class ProductController {
     @Autowired
     private ProductRepository productRepository;

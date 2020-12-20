@@ -1,0 +1,56 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml"  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <title>Все Пользователи</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body>
+
+<header th:insert="blocks/header :: header"></header>
+
+<main role="main">
+
+    <section class="jumbotron text-center">
+        <div class="container">
+            <form th:action="@{users/add}" method="post">
+                <input type="text" class="form-control" placeholder="Логин" required name="username"/><br>
+                <input type="password" class="form-control" placeholder="Пароль" required name="password"/><br>
+                <input type="text" class="form-control" placeholder="Имя" required name="fname"/><br>
+                <input type="text" class="form-control" placeholder="Фамилия" required name="lname"/><br>
+                <input type="text" class="form-control" placeholder="Номер Телефона" required name="phoneNumber"/><br>
+                <button type="submit" class="btn btn-success">Добавить пользователя</button>
+            </form>
+        </div>
+    </section>
+
+    <div class="container">
+
+        <div class="row">
+            <table class="table table-hover table-dark">
+                <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Логин</th>
+                    <th scope="col">Имя</th>
+                    <th scope="col">Фамилия</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="el:${users}">
+                    <!--                        <th scope="row" th:text="${el.id}"/>-->
+                    <th><a th:text="${el.id}" th:href="@{/users/}+${el.id}"/></th>
+                    <td th:text="${el.username}"/>
+                    <td th:text="${el.fname}"/>
+                    <td th:text="${el.lname}"/>
+                </tr>
+
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+</main>
+<footer th:insert="blocks/footer::footer"></footer>
+</body>
+</html>
