@@ -50,6 +50,7 @@ public class Order {
     private java.util.Date accepted_date,gave_date;
     private int price;
     private Status status;
+    private Boolean notified;
     public Order(){}
     public Order(String client_name, String client_number, String problem, User acceptedUser,Type type,Model model) {
         this.client_name = client_name;
@@ -206,5 +207,13 @@ public class Order {
 
     public void setPrice(int price) {
         this.price = price;
+    }
+
+    public Boolean getNotified() {
+        return notified;
+    }
+
+    public void setNotified(Boolean notified) {
+        this.notified = notified;
     }
 }

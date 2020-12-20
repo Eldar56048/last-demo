@@ -2,6 +2,7 @@ package com.example.demo.controllers;
 
 import com.example.demo.models.*;
 import com.example.demo.repo.*;
+import com.example.demo.services.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -25,10 +26,13 @@ public class ProductController {
     private IncomingHistoryRepository incomingHistoryRepository;
     @Autowired
     private RecievingHistoryRepository recievingHistoryRepository;
+    @Autowired
+    private ProductService productService;
     @GetMapping
     public String getProductsPage(Model model){
         Iterable<Product> products = productRepository.findAll();
         model.addAttribute("products",products);
+        model.addAttribute("productService",productService);
         return "products";
     }
 

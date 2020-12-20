@@ -29,9 +29,10 @@
                 <thead>
                 <tr>
                     <th scope="col">#</th>
-                    <th scope="col">Product Name</th>
-                    <th scope="col">Product Description</th>
-                    <th scope="col">Price</th>
+                    <th scope="col">Наименование продукта</th>
+                    <th scope="col">Описание продукта</th>
+                    <th scope="col">Цена</th>
+                    <th scope="col">В складе</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -41,6 +42,7 @@
                     <td th:text="${el.product_name}"/>
                     <td th:text="${el.description}"/>
                     <td th:text="${el.price}"/>
+                    <td th:text="${productService.getCountOfStorage(el.id)}"/>
                 </tr>
 
                 </tbody>

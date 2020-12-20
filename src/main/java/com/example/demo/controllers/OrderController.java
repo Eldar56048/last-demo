@@ -38,11 +38,10 @@ public class OrderController {
     private ModelRepository modelRepository;
     @PostMapping("/orders/add")
     public String ordersAdd(@AuthenticationPrincipal User user,@RequestParam String client_name,@RequestParam String client_number, @RequestParam String problem, @RequestParam Long type_id, @RequestParam Long model_id, Model model){
-        System.out.println("Hello");
-        System.out.println(client_name+" "+client_number+" "+problem);
         Type type = typeRepository.getAllById(type_id);
         com.example.demo.models.Model model1 = modelRepository.getAllById(model_id);
         Order order = new Order(client_name,client_number,problem,user,type,model1);
+        order.setNotified(false);
         orderRepository.save(order);
         return "redirect:/orders";
     }
@@ -101,16 +100,25 @@ public class OrderController {
         return "redirect:/orders/"+order.getId();
     }
     @GetMapping("/orders/{id}/done")
-    public String orderDone(@AuthenticationPrincipal User user,@PathVariable(value = "id") long id, Model model) throws ClassNotFoundException {
-        Order order = orderRepository.findById(id).orElseThrow(()-> new ClassNotFoundException());
+    public String orderDone(@AuthenticationPrincipal User user,@PathVariable(value = "id") long id, Model model){
+        Order order = orderRepository.getAllById(id);
         order.setStatus(Status.DONE);
         order.setDoneUser(user);
         orderRepository.save(order);
+        return "redirect:/orders/"+id;
+    }
+
+    @GetMapping("/orders/{id}/notify")
+    public String notify(@AuthenticationPrincipal User user,@PathVariable(value = "id") long id, Model model){
+        Order order = orderRepository.getAllById(id);
         String message = "Ваш заказ №"+order.getId()+" готов \n"+
                 "Кто сделал: "+order.getDoneUser().getFname()+" "+order.getDoneUser().getLname()+"\n"+
+                "Тел: "+order.getDoneUser().getPhoneNumber()+"\n"+
                 "Цена: "+order.getPrice()+"\n"+
-                "С уважением команда WEB-PORTAL";
-        smsc.send_sms(order.getClient_number(),message,0, "", "", 0, "", "");
+                "С уважением команда WEBPORTAL";
+        smsc.send_sms(order.getClient_number(),message,1, "", "", 0, "", "");
+        order.setNotified(true);
+        orderRepository.save(order);
         return "redirect:/orders/"+id;
     }
 
