@@ -83,7 +83,6 @@ public class MainController {
         XSSFSheet sheet = workbook.getSheetAt(0);
 
         Iterator<Row> rowIterator = sheet.iterator();
-        ArrayList<Service> services = new ArrayList<>();
         while(rowIterator.hasNext()){
             Row row = rowIterator.next();
             Service service = new Service();
@@ -92,10 +91,12 @@ public class MainController {
                 service.setService_name(cellIterator.next().toString());
                 service.setPrice((int)Float.parseFloat(cellIterator.next().toString()));
                 service.setService_description(cellIterator.next().toString());
+                System.out.println(service.getService_name()+" "+service.getPrice());
+
             }
-            services.add(service);
+            serviceRepository.save(service);
         }
-        serviceRepository.saveAll(services);
+
         return "redirect:/orders";
     }*/
 

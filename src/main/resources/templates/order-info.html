@@ -9,6 +9,9 @@
 
 <header th:insert="blocks/header :: header"></header>
 <main role="main" class="container">
+    <div class="container" style="text-align: center">
+        <h3 th:text='${"Информация о заказе №"+order.get(0).id}'/>
+    </div>
     <div th:each="orderOne:${order}" class="jumbotron">
         <h3 th:text='${"Имя клиента: "+orderOne.client_name}'/>
         <h3 th:text='${"Номер клиента: "+orderOne.client_number}'/>
