@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 @Controller
-@PreAuthorize("hasAuthority('ADMIN')")
+@PreAuthorize("hasAuthority('ADMIN')||hasAuthority('MODERATOR')")
 @RequestMapping("/services")
 public class ServiceController {
     @Autowired

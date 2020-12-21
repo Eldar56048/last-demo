@@ -2,6 +2,7 @@ package com.example.demo.controllers;
 
 import com.example.demo.models.*;
 import com.example.demo.repo.*;
+import com.example.demo.services.OrderService;
 import com.example.demo.smsc.Smsc;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -36,6 +37,8 @@ public class OrderController {
     private RecievingHistoryRepository recievingHistoryRepository;
     @Autowired
     private ModelRepository modelRepository;
+    @Autowired
+    private OrderService orderService;
     @PostMapping("/orders/add")
     public String ordersAdd(@AuthenticationPrincipal User user,@RequestParam String client_name,@RequestParam String client_number, @RequestParam String problem, @RequestParam Long type_id, @RequestParam Long model_id, Model model){
         Type type = typeRepository.getAllById(type_id);
@@ -185,6 +188,22 @@ public class OrderController {
         Iterable<Order> orders = orderRepository.findAllByStatus(Status.GIVEN);
         model.addAttribute("orders",orders);
         return "orders";
+    }
+
+    @GetMapping("/order-admin/page/{pageNo}")
+    public String findPaginated(@PathVariable(value = "pageNo") int pageNo,Model model){
+        int pageSize = 5;
+        Page<Order> page = orderService.findPaginated(pageNo,pageSize);
+        List<Order> orderList = page.getContent();
+        model.addAttribute("currentPage",pageNo);
+        model.addAttribute("totalPages",page.getTotalPages());
+        model.addAttribute("totalItems",page.getTotalElements());
+        model.addAttribute("orderList",orderList);
+        return "order-admin";
+    }
+    @GetMapping("/order-admin")
+    public String viewOrderNew(Model model){
+        return findPaginated(1,model);
     }
 
 }

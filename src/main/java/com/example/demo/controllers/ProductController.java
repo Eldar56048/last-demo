@@ -14,7 +14,7 @@ import java.util.Optional;
 
 @Controller
 @RequestMapping("/products")
-@PreAuthorize("hasAuthority('ADMIN')")
+@PreAuthorize("hasAuthority('MODERATOR')")
 public class ProductController {
     @Autowired
     private ProductRepository productRepository;

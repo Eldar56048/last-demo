@@ -1,0 +1,87 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml"  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <title>Все Заказы</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body>
+
+<header th:insert="blocks/header :: header"></header>
+
+<main role="main">
+
+    <section class="jumbotron text-center">
+        <div class="container">
+            <form th:action="@{/orders/add}" method="post">
+                <input type="text" name="client_name" placeholder="Имя клиента" required class="form-control"><br>
+                <input type="tel" name="client_number" placeholder="Номер клиента" required class="form-control"><br>
+                <input class="form-control" list="types" name="type_id" required id="type" placeholder="Выберите Тип устройства"><br>
+                <datalist  id="types">
+                    <option th:each="el:${types}" th:value="${el.id}" th:text='${el.name}'/>
+                </datalist><br>
+                <input class="form-control" list="models" name="model_id" required id="model" placeholder="Выберите Модель устройства"><br>
+                <datalist  id="models">
+                    <option th:each="el:${models}" th:value="${el.id}" th:text='${el.name}'/>
+                </datalist><br>
+                <textarea  name="problem" placeholder="Проблема" required class="form-control"></textarea><br>
+                <button type="submit" class="btn btn-success">Добавить</button><br>
+            </form>
+        </div>
+    </section>
+
+    <div class="container">
+        <a th:href='${"/orders/search/notdone"}'><button class="btn btn-danger">Не сделано</button></a>
+        <a th:href='${"/orders/search/done"}'><button class="btn btn-primary">Сделано</button></a>
+        <a th:href='${"/orders/search/given"}'><button class="btn btn btn-success">Отдано</button></a>
+        <a th:href='${"/orders"}'><button class="btn btn btn-dark">Все</button></a>
+        <br><br>
+        <div class="row">
+            <table class="table table-hover table-dark">
+                <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">First Name</th>
+                    <th scope="col">Phone Number</th>
+                    <th scope="col">Status</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="el:${orderList}">
+                    <!--                        <th scope="row" th:text="${el.id}"/>-->
+                    <th><a th:text="${el.id}" th:href="@{/orders/}+${el.id}"/></th>
+                    <td th:text="${el.client_name}"/>
+                    <td th:text="${el.client_number}"/>
+                    <td style="color: white" th:if='${el.status.toString().equals("NOTDONE")}'>Не Сделано</td>
+                    <td style="color: yellow" th:if='${el.status.toString().equals("DONE")}'>Сделано</td>
+                    <td style="color: lawngreen" th:if='${el.status.toString().equals("GIVEN")}'>Выдано</td>
+                </tr>
+                </tbody>
+            </table>
+            <div th:if="${totalPages>1}">
+                <div class="row col-10">
+                    <div class="col-2">
+                        Total Rows:[[${totalItems}]]
+                    </div>
+                    <div class="col-1">
+                        <span th:each="i: ${#numbers.sequence(1,totalPages)}">
+                            <a th:if="${currentPage != i}" th:href='${"/order-admin/page/"+i}'>[[${i}]]</a>
+                        </span>
+                    </div>
+                    <div class="col-1">
+                        <a th:if="${currentPage < totalPages}" th:href='${"/order-admin/page/"+currentPage+1}'>Next</a>
+                        <span th:unless="${currentPage<totalPages}">Next</span>
+                    </div>
+                    <div class="col-1">
+                        <a th:if="${currentPage < totalPages}" th:href='${"/order-admin/page/"+totalPages}'>Last</a>
+                        <span th:unless="${currentPage<totalPages}">Last</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</main>
+<footer th:insert="blocks/footer::footer"></footer>
+</body>
+</html>
