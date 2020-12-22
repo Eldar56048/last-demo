@@ -1,7 +1,5 @@
 package com.example.demo.models;
 
-import com.example.demo.repo.OrderRepository;
-
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 
@@ -29,7 +27,11 @@ public class Order {
             }
     )
     private Long id;
-    private String client_name,client_number,problem;
+    @Column(name = "name")
+    private String client_name;
+    @Column(name = "number")
+    private String client_number;
+    private String problem;
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItem> items;
     @ManyToOne(fetch = FetchType.EAGER)

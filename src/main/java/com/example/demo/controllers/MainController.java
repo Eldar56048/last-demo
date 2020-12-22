@@ -50,6 +50,7 @@ public class MainController {
 
     @GetMapping("/")
     public String main(Model model){
+        model.addAttribute("order",new Order());
         return "profile";
     }
 

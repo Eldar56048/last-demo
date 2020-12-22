@@ -8,7 +8,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 @Service
-@PreAuthorize("hasAuthority('ADMIN')")
+@PreAuthorize("hasAuthority('MODERATOR')")
 public class ProductService {
     @Autowired
     private StorageRepository storageRepository;
