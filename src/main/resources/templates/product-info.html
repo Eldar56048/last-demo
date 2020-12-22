@@ -15,7 +15,7 @@
         <h3 th:text='${"Цена Товара: "+productOne.price}'/>
         <h3 th:text='${"Осталось в складе: "+storage.quantity}'/>
         <a th:href="@{/products/}+${productOne.id}+@{/update}"><button type="button" class="btn btn-primary">Изменить</button></a>
-        <a th:href="@{/products/}+${productOne.id}+@{/history/incoming}"><button type="button" class="btn btn-success">История добавления</button></a>
+        <a sec:authorize="hasAuthority('ADMIN')" th:href="@{/products/}+${productOne.id}+@{/history/incoming}"><button type="button" class="btn btn-success">История добавления</button></a>
         <a th:href="@{/products/}+${productOne.id}+@{/history/recieving}"><button type="button" class="btn btn-dark">Взяли со склада</button></a>
         <a th:href="@{/products/}+${productOne.id}+@{/add}"><button type="button" class="btn btn-success">Добавить в склад</button></a>
         <a th:href="@{/products/}+${productOne.id}+@{/remove}"><button type="button" class="btn btn-danger">Удалить</button></a>

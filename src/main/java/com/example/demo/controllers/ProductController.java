@@ -89,6 +89,7 @@ public class ProductController {
         model.addAttribute("product",result);
         return "product-update";
     }
+    @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/{id}/history/incoming")
     public String getProductHistoryIncoming(@PathVariable(value = "id")long id,Model model){
         Iterable<IncomingHistory> incomingHistories = incomingHistoryRepository.getAllByProductId(id);

@@ -18,7 +18,7 @@
         <datalist  id="providers">
             <option th:each="el:${providers}" th:value="${el.id}" th:text='${el.provider_name}'/>
         </datalist><br>
-        <input type="number" class="form-control" placeholder="Цена за количество" name="price" required><br>
+        <input type="number" class="form-control" placeholder="Цена за единицу" name="price" required><br>
         <input type="number" class="form-control" placeholder="Количество" name="quantity" required><br>
         <button style="width: 100%" type="submit" class="btn btn-success">Add</button>
     </form>
