@@ -50,8 +50,8 @@
                 <tr th:each="el:${orderList}">
                     <!--                        <th scope="row" th:text="${el.id}"/>-->
                     <th><a th:text="${el.id}" th:href="@{/orders/}+${el.id}"/></th>
-                    <td th:text="${el.client_name}"/>
-                    <td th:text="${el.client_number}"/>
+                    <td th:text="${el.name}"/>
+                    <td th:text="${el.number}"/>
                     <td style="color: white" th:if='${el.status.toString().equals("NOTDONE")}'>Не Сделано</td>
                     <td style="color: yellow" th:if='${el.status.toString().equals("DONE")}'>Сделано</td>
                     <td style="color: lawngreen" th:if='${el.status.toString().equals("GIVEN")}'>Выдано</td>
@@ -69,11 +69,11 @@
                         </span>
                     </div>
                     <div>
-                        <a th:if="${currentPage < totalPages}" th:href='${"/order-admin/page/"+(currentPage+1)+"?sortField="+sortField+"&sortDir="+sortDir}'>Next &nbsp;</a>
+                        <a th:if="${currentPage < totalPages}" th:href='${"/order-admin/page/"+(currentPage+1)+"?sortField="+sortField+"&sortDir="+sortDir}'><button class="btn btn-primary">Next</button></a>
                         <span th:unless="${currentPage<totalPages}">Next &nbsp;</span>
                     </div>
                     <div>
-                        <a th:if="${currentPage < totalPages}" th:href='${"/order-admin/page/"+totalPages+"?sortField="+sortField+"&sortDir="+sortDir}'>Last</a>
+                        <a th:if="${currentPage < totalPages}" th:href='${"/order-admin/page/"+totalPages+"?sortField="+sortField+"&sortDir="+sortDir}'><button class="btn btn-success">Last</button></a>
                         <span th:unless="${currentPage<totalPages}">Last</span>
                     </div>
                 </div>

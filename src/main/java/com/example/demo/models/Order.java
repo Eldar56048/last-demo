@@ -28,9 +28,9 @@ public class Order {
     )
     private Long id;
     @Column(name = "name")
-    private String client_name;
+    private String name;
     @Column(name = "number")
-    private String client_number;
+    private String number;
     private String problem;
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItem> items;
@@ -54,9 +54,9 @@ public class Order {
     private Status status;
     private Boolean notified;
     public Order(){}
-    public Order(String client_name, String client_number, String problem, User acceptedUser,Type type,Model model) {
-        this.client_name = client_name;
-        this.client_number = client_number;
+    public Order(String name, String number, String problem, User acceptedUser, Type type, Model model) {
+        this.name = name;
+        this.number = number;
         this.problem = problem;
         this.acceptedUser = acceptedUser;
         this.accepted_date = new java.util.Date();
@@ -152,16 +152,16 @@ public class Order {
         this.id = id;
     }
 
-    public String getClient_name() {
-        return client_name;
+    public String getName() {
+        return name;
     }
 
-    public void setClient_name(String client_name) {
-        this.client_name = client_name;
+    public void setName(String client_name) {
+        this.name = client_name;
     }
 
-    public String getClient_number() {
-        return client_number;
+    public String getNumber() {
+        return number;
     }
 
     public Model getModel() {
@@ -172,8 +172,8 @@ public class Order {
         this.model = model;
     }
 
-    public void setClient_number(String client_number) {
-        this.client_number = client_number;
+    public void setNumber(String client_number) {
+        this.number = client_number;
     }
 
     public String getProblem() {

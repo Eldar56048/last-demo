@@ -119,7 +119,7 @@ public class OrderController {
                 "Тел: " + order.getDoneUser().getPhoneNumber() + "\n" +
                 "Цена: " + order.getPrice() + "\n" +
                 "С уважением команда WEBPORTAL";
-        smsc.send_sms(order.getClient_number(), message, 1, "", "", 0, "", "");
+        smsc.send_sms(order.getNumber(), message, 1, "", "", 0, "", "");
         order.setNotified(true);
         orderRepository.save(order);
         return "redirect:/orders/" + id;
@@ -193,12 +193,6 @@ public class OrderController {
     public String findPaginated(@PathVariable(value = "pageNo") int pageNo, @RequestParam("sortField") String sortField,
                                 @RequestParam("sortDir") String sortDir, Model model) {
         int pageSize = 5;
-        if(sortField.equals("name")){
-            sortField = "client_name";
-        }
-        if(sortField.equals("number")){
-            sortField = "client_number";
-        }
         Page<Order> page = orderService.findPaginated(pageNo, pageSize, sortField, sortDir);
         List<Order> orderList = page.getContent();
         model.addAttribute("currentPage", pageNo);

@@ -13,8 +13,8 @@
         <h3 th:text='${"Информация о заказе №"+order.get(0).id}'/>
     </div>
     <div th:each="orderOne:${order}" class="jumbotron">
-        <h3 th:text='${"Имя клиента: "+orderOne.client_name}'/>
-        <h3 th:text='${"Номер клиента: "+orderOne.client_number}'/>
+        <h3 th:text='${"Имя клиента: "+orderOne.name}'/>
+        <h3 th:text='${"Номер клиента: "+orderOne.number}'/>
         <h3 th:if="${orderOne.type!=null}" th:text='${"Тип устройства: "+orderOne.type.name}'/>
         <h3 th:if="${orderOne.model!=null}" th:text='${"Модель устройства: "+orderOne.model.name}'/>
         <h3 th:text='${"Дата приема: "+orderOne.accepted_date.toString()}'/>

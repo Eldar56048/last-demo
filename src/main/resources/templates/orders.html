@@ -30,6 +30,15 @@
         </div>
     </section>
 
+    <section class="jumbotron text-center">
+        <div class="container">
+            <input list="orders" class="form-control" name="order" onchange="onInput()" id="order" placeholder="Choose Order">
+            <datalist  id="orders">
+                <option th:each="el:${orders}" name="id" th:value='${el.id}' th:text='${"№"+el.id+" "+el.name+" "+el.number+" "+el.getDateByFormat()}'/>
+            </datalist>
+        </div>
+    </section>
+
         <div class="container">
             <a th:href='${"/orders/search/notdone"}'><button class="btn btn-danger">Не сделано</button></a>
             <a th:href='${"/orders/search/done"}'><button class="btn btn-primary">Сделано</button></a>
@@ -50,8 +59,8 @@
                     <tr th:each="el:${orders}">
 <!--                        <th scope="row" th:text="${el.id}"/>-->
                         <th><a th:text="${el.id}" th:href="@{/orders/}+${el.id}"/></th>
-                        <td th:text="${el.client_name}"/>
-                        <td th:text="${el.client_number}"/>
+                        <td th:text="${el.name}"/>
+                        <td th:text="${el.number}"/>
                         <td style="color: white" th:if='${el.status.toString().equals("NOTDONE")}'>Не Сделано</td>
                         <td style="color: yellow" th:if='${el.status.toString().equals("DONE")}'>Сделано</td>
                         <td style="color: lawngreen" th:if='${el.status.toString().equals("GIVEN")}'>Выдано</td>
@@ -65,5 +74,19 @@
 
 </main>
 <footer th:insert="blocks/footer::footer"></footer>
+
+<script>
+    function onInput() {
+        var val = document.getElementById("order").value;
+        var opts = document.getElementById('orders').childNodes;
+        for (var i = 0; i < opts.length; i++) {
+            if (opts[i].value === val) {
+                window.location.replace('/orders/'+opts[i].value);
+                break;
+            }
+        }
+    }
+</script>
+
 </body>
 </html>
