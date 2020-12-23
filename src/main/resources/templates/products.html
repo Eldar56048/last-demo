@@ -21,6 +21,16 @@
             </form>
         </div>
     </section>
+
+    <section class="jumbotron text-center">
+        <div class="container">
+            <input list="products" class="form-control" name="product" onchange="onInput()" id="product" placeholder="Choose Product">
+            <datalist  id="products">
+                <option th:each="el:${products}" name="id" th:value='${el.id}' th:text='${"№"+el.id+" "+el.product_name+" "+el.description}'/>
+            </datalist>
+        </div>
+    </section>
+
     <header>
     </header>
     <div class="container">
@@ -54,5 +64,18 @@
 
 </main>
 <footer th:insert="blocks/footer::footer"></footer>
+
+<script>
+    function onInput() {
+        var val = document.getElementById("product").value;
+        var opts = document.getElementById('products').childNodes;
+        for (var i = 0; i < opts.length; i++) {
+            if (opts[i].value === val) {
+                window.location.replace('/products/'+opts[i].value);
+                break;
+            }
+        }
+    }
+</script>
 </body>
 </html>
