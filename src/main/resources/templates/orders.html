@@ -30,6 +30,16 @@
         </div>
     </section>
 
+    <!--<section class="jumbotron text-center">
+        <div class="container">
+            <form th:action="@{/orders/findByDate}" method="post">
+                <input type="date" name="date1" pattern="yyyy-MM-dd" class="form-control"><br>
+                <input type="date" name="date2" pattern="yyyy-MM-dd" class="form-control"><br>
+                <input type="submit" class="form-control">
+            </form>
+        </div>
+    </section>-->
+
     <section class="jumbotron text-center">
         <div class="container">
             <input list="orders" class="form-control" name="order" onchange="onInput()" id="order" placeholder="Choose Order">

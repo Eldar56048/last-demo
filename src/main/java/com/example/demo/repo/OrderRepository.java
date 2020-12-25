@@ -13,5 +13,7 @@ public interface OrderRepository extends JpaRepository<Order,Long> {
     Order getAllById(Long id);
     Iterable<Order> findAllByStatus(Status status);
     List<Order> findAll();
+    Iterable<Order> findAllByAccepteddateBetween(Date date1,Date date2);
+    Iterable<Order> findAllByGavedateBetween(Date date1,Date date2);
     /*Iterable<Order> getAllByAccepted_dateBetween(Date date1,Date date2);*/
 }

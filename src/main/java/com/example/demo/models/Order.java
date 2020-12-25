@@ -49,17 +49,21 @@ public class Order {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "give_user_id")
     private User giveUser;
-    private java.util.Date accepted_date,gave_date;
+    @Column(name = "accepted_date")
+    private java.util.Date accepteddate;
+    @Column(name = "gave_date")
+    private java.util.Date gavedate;
     private int price;
     private Status status;
     private Boolean notified;
+    private String comment;
     public Order(){}
     public Order(String name, String number, String problem, User acceptedUser, Type type, Model model) {
         this.name = name;
         this.number = number;
         this.problem = problem;
         this.acceptedUser = acceptedUser;
-        this.accepted_date = new java.util.Date();
+        this.accepteddate = new java.util.Date();
         this.status = Status.NOTDONE;
         this.type = type;
         this.model = model;
@@ -181,26 +185,34 @@ public class Order {
     }
     public String getDateByFormat(){
         SimpleDateFormat ft = new SimpleDateFormat ("E, dd MMM yyyy HH:mm:ss");
-        return ft.format(this.accepted_date);
+        return ft.format(this.accepteddate);
+    }
+    public String getAcceptedDateByFormat(){
+        SimpleDateFormat ft = new SimpleDateFormat ("E, dd MMM yyyy HH:mm:ss");
+        return ft.format(this.accepteddate);
+    }
+    public String getGaveDateByFormat(){
+        SimpleDateFormat ft = new SimpleDateFormat ("E, dd MMM yyyy HH:mm:ss");
+        return ft.format(this.gavedate);
     }
     public void setProblem(String problem) {
         this.problem = problem;
     }
 
-    public Date getAccepted_date() {
-        return accepted_date;
+    public Date getAccepteddate() {
+        return accepteddate;
     }
 
-    public void setAccepted_date(Date accepted_date) {
-        this.accepted_date = accepted_date;
+    public void setAccepteddate(Date accepted_date) {
+        this.accepteddate = accepted_date;
     }
 
-    public Date getGave_date() {
-        return gave_date;
+    public Date getGavedate() {
+        return gavedate;
     }
 
-    public void setGave_date(Date gave_date) {
-        this.gave_date = gave_date;
+    public void setGavedate(Date gave_date) {
+        this.gavedate = gave_date;
     }
 
     public int getPrice() {
@@ -217,5 +229,13 @@ public class Order {
 
     public void setNotified(Boolean notified) {
         this.notified = notified;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
     }
 }

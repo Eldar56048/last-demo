@@ -1,13 +1,25 @@
 <!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
-    <title th:text="${title}"/>
+    <title>first Page</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 </head>
 <body>
 
 <header th:insert="blocks/header::header"/>
+
+<section sec:authorize="hasAuthority('ADMIN')" class="jumbotron text-center">
+    <div class="container">
+        <h1 th:value='${"Взять отчет за определенную дату"}'/>
+        <form th:action="@{/orders/findByDate}" method="post">
+            <input type="date" name="date1" pattern="yyyy-MM-dd" class="form-control"><br>
+            <input type="date" name="date2" pattern="yyyy-MM-dd" class="form-control"><br>
+            <input type="submit" class="form-control">
+        </form>
+    </div>
+</section>
+
 <footer th:insert="blocks/footer::footer"></footer>
 </body>
 </html>

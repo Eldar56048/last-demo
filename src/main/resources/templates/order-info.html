@@ -17,9 +17,10 @@
         <h3 th:text='${"Номер клиента: "+orderOne.number}'/>
         <h3 th:if="${orderOne.type!=null}" th:text='${"Тип устройства: "+orderOne.type.name}'/>
         <h3 th:if="${orderOne.model!=null}" th:text='${"Модель устройства: "+orderOne.model.name}'/>
-        <h3 th:text='${"Дата приема: "+orderOne.accepted_date.toString()}'/>
+        <h3 th:text='${"Дата приема: "+orderOne.accepteddate.toString()}'/>
         <h3 th:text='${"Проблема: "+orderOne.problem}'/>
         <h3 th:text='${"Кто принял: "+orderOne.acceptedUser.getFname()+" "+orderOne.acceptedUser.getLname()}'/>
+        <h3 th:if="${orderOne.comment!=null}" th:text='${"Комментарий: "+orderOne.comment}'/>
         <h3  th:if='${orderOne.status.toString().equals("NOTDONE")}'>Статус: Не Сделано</h3>
         <h3  th:if='${orderOne.status.toString().equals("DONE")}'>Статус: Сделано</h3>
         <h3  th:if='${orderOne.status.toString().equals("GIVEN")}'>Статус: Выдано</h3>
@@ -63,12 +64,14 @@
         <h3 th:if="${orderOne.doneUser!=null}" th:text='${"Кто сделал: "+orderOne.doneUser.getFname()+" "+orderOne.doneUser.getLname()}'/>
         <h3 th:if="${orderOne.notified!=null}" th:text='${"Уведомлено: "+((orderOne.notified) ? "Да":"Нет")}'/>
         <h3 th:if="${orderOne.giveUser!=null}" th:text='${"Кто отдал: "+orderOne.giveUser.getFname()+" "+orderOne.giveUser.getLname()}'/>
-        <h3 th:if="${orderOne.gave_date!=null}" th:text='${"Забрал: "+orderOne.gave_date.toString()}'/>
+        <h3 th:if="${orderOne.gavedate!=null}" th:text='${"Забрал: "+orderOne.gavedate.toString()}'/>
         <a th:href="@{/orders/}+${orderOne.id}+@{/update}"><button type="button" class="btn btn-primary">Добавить Услугу</button></a>
         <a th:href="@{/orders/}+${orderOne.id}+@{/add/product}"><button type="button" class="btn btn-primary">Добавить Товар</button></a>
         <a th:if='${orderOne.status.toString().equals("NOTDONE")}' th:href="@{/orders/}+${orderOne.id}+@{/done}"><button type="button" class="btn btn-warning">Исполнено</button></a>
         <a th:if='${orderOne.status.toString().equals("DONE")&&orderOne.notified!=true}' th:href="@{/orders/}+${orderOne.id}+@{/notify}"><button type="button" class="btn btn-primary">Оповестить</button></a>
         <a th:href="@{/orders/}+${orderOne.id}+@{/given}"><button type="button" class="btn btn-success">Выдано</button></a>
+        <a th:if="${orderOne.comment==null}" th:href="@{/orders/}+${orderOne.id}+@{/comment}"><button type="button" class="btn btn-success">Добавить Комментарии</button></a>
+        <a th:if="${orderOne.comment!=null}" th:href="@{/orders/}+${orderOne.id}+@{/comment/update}"><button type="button" class="btn btn-primary">Изменить Комментарии</button></a>
         <a sec:authorize="hasAuthority('ADMIN')" th:href="@{/orders/}+${orderOne.id}+@{/remove}"><button type="button" class="btn btn-danger">Удалить</button></a>
         <a th:href="@{/orders/}+${orderOne.id}+@{/QRCode}"><button type="button" class="btn btn-primary">QRCode</button></a>
     </div>

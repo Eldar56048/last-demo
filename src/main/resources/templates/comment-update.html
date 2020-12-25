@@ -1,0 +1,20 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml"  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <title>Изменить коментарии</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body>
+
+<header th:insert="blocks/header :: header"></header>
+<div class="container">
+    <h2 th:text='${"Изменение комментарии заказа под ID: "+order.id}'/>
+    <form method="post" th:action="@{/orders/}+${order.id}+@{/comment/update}">
+        <input type="text" name="comment" th:value="${order.comment}" placeholder="Коментарии" required class="form-control"><br>
+        <button type="submit" class="btn btn-primary">Update</button>
+    </form>
+</div>
+<footer th:insert="blocks/footer::footer"></footer>
+</body>
+</html>

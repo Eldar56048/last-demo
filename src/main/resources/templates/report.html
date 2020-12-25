@@ -1,0 +1,111 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml"  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <title>Отчет</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body>
+
+<header th:insert="blocks/header :: header"></header>
+
+<main role="main">
+
+
+    <!--<section class="jumbotron text-center">
+        <div class="container">
+            <input list="orders" class="form-control" name="order" onchange="onInput()" id="order" placeholder="Choose Order">
+            <datalist  id="orders">
+                <option th:each="el:${orders}" name="id" th:value='${el.id}' th:text='${"№"+el.id+" "+el.name+" "+el.number+" "+el.getDateByFormat()}'/>
+            </datalist>
+        </div>
+    </section>-->
+
+    <div class="container">
+        <h1>Принято</h1>
+        <div class="row">
+            <table class="table table-hover table-dark">
+                <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Accepted Date</th>
+                    <th scope="col">First Name</th>
+                    <th scope="col">Phone Number</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Кто принял</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="el:${ordersAccepted}">
+                    <!--                        <th scope="row" th:text="${el.id}"/>-->
+                    <th><a th:text="${el.id}" th:href="@{/orders/}+${el.id}"/></th>
+                    <td th:text="${el.getAcceptedDateByFormat()}"/>
+                    <td th:text="${el.name}"/>
+                    <td th:text="${el.number}"/>
+                    <td style="color: white" th:if='${el.status.toString().equals("NOTDONE")}'>Не Сделано</td>
+                    <td style="color: yellow" th:if='${el.status.toString().equals("DONE")}'>Сделано</td>
+                    <td style="color: lawngreen" th:if='${el.status.toString().equals("GIVEN")}'>Выдано</td>
+                    <td><a th:text="${el.acceptedUser.fname}" th:href='${"/users/"+el.acceptedUser.id}'/></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <br>
+    <hr>
+    <br>
+    <div class="container">
+        <h1>Отдано</h1>
+        <div class="row">
+            <table class="table table-hover table-dark">
+                <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Accepted Date</th>
+                    <th scope="col">First Name</th>
+                    <th scope="col">Phone Number</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Кто принял</th>
+                    <th scope="col">Когда Отдал</th>
+                    <th scope="col">Кто Отдал</th>
+                    <th scope="col">Доход</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="el:${ordersGaven}">
+                    <!--                        <th scope="row" th:text="${el.id}"/>-->
+                    <th><a th:text="${el.id}" th:href="@{/orders/}+${el.id}"/></th>
+                    <td th:text="${el.getAcceptedDateByFormat()}"/>
+                    <td th:text="${el.name}"/>
+                    <td th:text="${el.number}"/>
+                    <td style="color: white" th:if='${el.status.toString().equals("NOTDONE")}'>Не Сделано</td>
+                    <td style="color: yellow" th:if='${el.status.toString().equals("DONE")}'>Сделано</td>
+                    <td style="color: lawngreen" th:if='${el.status.toString().equals("GIVEN")}'>Выдано</td>
+                    <td><a th:text="${el.acceptedUser.fname}" th:href='${"/users/"+el.acceptedUser.id}'/></td>
+                    <td th:text="${el.getGaveDateByFormat()}"/>
+                    <td><a th:text="${el.giveUser.fname}" th:href='${"/users/"+el.giveUser.id}'/></td>
+                    <td th:text="${el.price}"/>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</main>
+<footer th:insert="blocks/footer::footer"></footer>
+
+<script>
+    function onInput() {
+        var val = document.getElementById("order").value;
+        var opts = document.getElementById('orders').childNodes;
+        for (var i = 0; i < opts.length; i++) {
+            if (opts[i].value === val) {
+                window.location.replace('/orders/'+opts[i].value);
+                break;
+            }
+        }
+    }
+</script>
+
+</body>
+</html>

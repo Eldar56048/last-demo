@@ -4,17 +4,18 @@ import com.example.demo.models.*;
 import com.example.demo.repo.*;
 import com.example.demo.services.OrderService;
 import com.example.demo.smsc.Smsc;
+import org.apache.poi.ss.usermodel.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+
+import java.time.LocalDate;
+import java.util.*;
 
 @Controller
 public class OrderController {
@@ -111,6 +112,27 @@ public class OrderController {
         return "redirect:/orders/" + id;
     }
 
+    @GetMapping("/orders/{id}/comment")
+    public String orderCommentAdd(@PathVariable(value = "id") long id, Model model) {
+        Order order = orderRepository.getAllById(id);
+        model.addAttribute("order",order);
+        return "comment-update";
+    }
+    @GetMapping("/orders/{id}/comment/update")
+    public String orderCommentUpdate(@PathVariable(value = "id") long id, Model model) {
+        Order order = orderRepository.getAllById(id);
+        model.addAttribute("order",order);
+        return "comment-update";
+    }
+
+    @PostMapping("/orders/{id}/comment/update")
+    public String orderCommentUpdatePost(@PathVariable(value = "id") long id,@RequestParam String comment, Model model) {
+        Order order = orderRepository.getAllById(id);
+        order.setComment(comment);
+        orderRepository.save(order);
+        return "redirect:/orders/"+id;
+    }
+
     @GetMapping("/orders/{id}/notify")
     public String notify(@AuthenticationPrincipal User user, @PathVariable(value = "id") long id, Model model) {
         Order order = orderRepository.getAllById(id);
@@ -128,7 +150,7 @@ public class OrderController {
     @GetMapping("/orders/{id}/given")
     public String orderGiven(@AuthenticationPrincipal User user, @PathVariable(value = "id") long id, Model model) throws ClassNotFoundException {
         Order order = orderRepository.findById(id).orElseThrow(() -> new ClassNotFoundException());
-        order.setGave_date(new Date());
+        order.setGavedate(new Date());
         order.setStatus(Status.GIVEN);
         order.setGiveUser(user);
         orderRepository.save(order);
@@ -210,4 +232,18 @@ public class OrderController {
         return findPaginated(1, "id", "desc", model);
     }
 
+    @PostMapping("/orders/findByDate")
+    public String getOrdersByDate(@DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("date1") Date date1,@DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("date2") Date date2, Model model){
+        Calendar cal = Calendar.getInstance();
+        System.out.println(date2);
+        cal.setTime(date2);
+        cal.add(Calendar.DATE ,1);
+        date2 = cal.getTime();
+        System.out.println(date2);
+        Iterable<Order> ordersAcceptDate = orderRepository.findAllByAccepteddateBetween(date1,date2);
+        Iterable<Order> ordersGavenDate = orderRepository.findAllByGavedateBetween(date1,date2);
+        model.addAttribute("ordersAccepted",ordersAcceptDate);
+        model.addAttribute("ordersGaven",ordersGavenDate);
+        return "report";
+    }
 }
