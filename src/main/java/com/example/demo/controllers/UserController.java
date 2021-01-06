@@ -1,8 +1,7 @@
 package com.example.demo.controllers;
 
-import com.example.demo.models.Role;
-import com.example.demo.models.Type;
-import com.example.demo.models.User;
+import com.example.demo.models.*;
+import com.example.demo.repo.ExperienceRepository;
 import com.example.demo.repo.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -23,7 +22,8 @@ public class UserController {
     private UserRepository userRepository;
     @Autowired
     private PasswordEncoder passwordEncoder;
-
+    @Autowired
+    private ExperienceRepository experienceRepository;
     @GetMapping
     public String getUsers(Model model){
         Iterable<User> users = userRepository.findAll();
@@ -36,6 +36,7 @@ public class UserController {
         user.setRoles(Collections.singleton(Role.USER));
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setEnabled(true);
+        user.setExperienceModel((experienceRepository.getAllByExperience(Experience.Trainee)));
         userRepository.save(user);
         return "redirect:/users";
     }
@@ -82,6 +83,24 @@ public class UserController {
         user.setPhoneNumber(phoneNumber);
         userRepository.save(user);
         return "redirect:/users/"+id;
+    }
+
+    @GetMapping("/{id}/experience")
+    public String getExperienceForUpdating(@PathVariable(value = "id")long id,Model model){
+        User user = userRepository.getById(id);
+        model.addAttribute("user",user);
+        Iterable<ExperienceModel> experienceModels = experienceRepository.findAll();
+        model.addAttribute("experiences",experienceModels);
+        return "user-experience";
+    }
+
+    @PostMapping("/{id}/experience")
+    public String experienceUpdate(@PathVariable(value = "id")long id, @RequestParam Long experienceid,@ModelAttribute("user") User user) {
+        User userFirst = userRepository.getById(id);
+        ExperienceModel experienceModel = experienceRepository.getAllById(experienceid);
+        userFirst.setExperienceModel(experienceModel);
+        userRepository.save(userFirst);
+        return "redirect:/users/"+user.getId();
     }
 
     @GetMapping("/{id}/roles")

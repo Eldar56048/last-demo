@@ -27,7 +27,7 @@ public class ServiceController {
 
     @PostMapping("/add")
     public String addService(@RequestParam String name,@RequestParam String description,@RequestParam int price,Model model){
-        serviceRepository.save(new Service(name,description,price));
+        serviceRepository.save(new Service(name,description,price,0));
         return "redirect:/services";
     }
 
@@ -49,11 +49,12 @@ public class ServiceController {
         return "service-update";
     }
     @PostMapping("/{id}/update")
-    public String updateService(@PathVariable(value = "id")long id,@RequestParam String name,@RequestParam String description,@RequestParam int price,Model model) throws ClassNotFoundException {
+    public String updateService(@PathVariable(value = "id")long id,@RequestParam String name,@RequestParam String description,@RequestParam int price,@RequestParam int percentage, Model model) throws ClassNotFoundException {
         Service service = serviceRepository.findById(id).orElseThrow(()-> new ClassNotFoundException());
         service.setService_name(name);
         service.setService_description(description);
         service.setPrice(price);
+        service.setPercentage(percentage);
         serviceRepository.save(service);
         return "redirect:/services/"+service.getId();
     }

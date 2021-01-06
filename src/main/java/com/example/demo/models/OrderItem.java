@@ -24,20 +24,35 @@ public class OrderItem {
     private Order order;
     @ManyToOne
     private Service service;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "doneUser")
+    private User doneUser;
+    private int soldPrice;
+    private int servicePercentage;
+    @ManyToOne
+    private ExperienceModel userExperience;
+    private int last_price;
     @ManyToOne
     private Product product;
     public OrderItem(){
 
     }
-    public OrderItem(int quantity, Order order, Service service) {
+    public OrderItem(int quantity, Order order, Service service,User user) {
         this.quantity = quantity;
         this.order = order;
         this.service = service;
+        this.doneUser = user;
+        this.userExperience = user.getExperienceModel();
+        this.soldPrice = service.getPrice();
+        this.servicePercentage = service.getPercentage();
     }
-    public OrderItem(int quantity, Order order, Product product) {
+    public OrderItem(int quantity, Order order, Product product,User user,int last_price) {
         this.quantity = quantity;
         this.order = order;
         this.product = product;
+        this.doneUser = user;
+        this.last_price = last_price;
+        this.soldPrice = product.getPrice();
     }
 
     public Product getProduct() {
@@ -78,5 +93,45 @@ public class OrderItem {
 
     public void setService(Service service) {
         this.service = service;
+    }
+
+    public User getDoneUser() {
+        return doneUser;
+    }
+
+    public void setDoneUser(User doneUser) {
+        this.doneUser = doneUser;
+    }
+
+    public int getSoldPrice() {
+        return soldPrice;
+    }
+
+    public void setSoldPrice(int soldPrice) {
+        this.soldPrice = soldPrice;
+    }
+
+    public int getServicePercentage() {
+        return servicePercentage;
+    }
+
+    public void setServicePercentage(int servicePercentage) {
+        this.servicePercentage = servicePercentage;
+    }
+
+    public ExperienceModel getUserExperience() {
+        return userExperience;
+    }
+
+    public void setUserExperience(ExperienceModel userExperience) {
+        this.userExperience = userExperience;
+    }
+
+    public int getLast_price() {
+        return last_price;
+    }
+
+    public void setLast_price(int last_price) {
+        this.last_price = last_price;
     }
 }

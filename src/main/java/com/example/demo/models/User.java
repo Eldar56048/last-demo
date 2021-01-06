@@ -30,6 +30,8 @@ public class User implements UserDetails {
     @CollectionTable(name = "user_role",joinColumns = @JoinColumn(name = "user_id"))
     @Enumerated(EnumType.STRING)
     private Set<Role> roles;
+    @OneToOne(fetch = FetchType.EAGER)
+    private ExperienceModel experienceModel;
     private String phoneNumber;
 
     public String getPhoneNumber() {
@@ -116,4 +118,11 @@ public class User implements UserDetails {
         this.roles = roles;
     }
 
+    public ExperienceModel getExperienceModel() {
+        return experienceModel;
+    }
+
+    public void setExperienceModel(ExperienceModel experienceModel) {
+        this.experienceModel = experienceModel;
+    }
 }

@@ -13,9 +13,9 @@
         <h3 th:text='${"Информация о заказе №"+order.get(0).id}'/>
     </div>
     <div th:each="orderOne:${order}" class="jumbotron">
-        <h3 th:if="${orderOne.client==null}" th:text='${"ФИО клиента: "+orderOne.name}'/>
-        <a th:if="${orderOne.client!=null}" th:href='${"/clients/"+orderOne.client.id}'><h3  th:text='${"ФИО клиента: "+orderOne.client.clientSurname+" "+orderOne.client.clientName}'/></a>
+        <h3 th:if="${orderOne.client==null}" th:text='${"Имя клиента: "+orderOne.name}'/>
         <h3 th:if="${orderOne.client==null}" th:text='${"Тел. клиента: "+orderOne.number}'/>
+        <h3 th:if="${orderOne.client!=null}" th:text='${"Имя клиента: "+orderOne.client.clientName}'/>
         <h3 th:if="${orderOne.client!=null}" th:text='${"Тел. клиента: "+orderOne.client.phoneNumber}'/>
         <h3 th:if="${orderOne.type!=null}" th:text='${"Тип устройства: "+orderOne.type.name+" "+orderOne.model.name}'/>
         <h3 th:text='${"Модель Устройства: "+orderOne.modelCompany}'/>
@@ -30,41 +30,32 @@
         <table th:if="${orderOne.items!=null}" class="table table-hover table-dark">
             <thead>
             <tr>
-                <th scope="col">#</th>
                 <th scope="col">Type</th>
                 <th scope="col">Service/Product Name</th>
                 <th scope="col">Service/Product Price</th>
                 <th scope="col">Quantity</th>
                 <th scope="col">Price include</th>
-                <th scope="col">Who Done</th>
-                <th scope="col">Delete</th>
             </tr>
             </thead>
             <tbody>
             <tr th:each="el:${orderOne.items}">
                 <!--                        <th scope="row" th:text="${el.id}"/>-->
-                <th th:if="${el.service!=null}"><a th:text="${el.service.id}" th:href="@{/services/}+${el.service.id}"/></th>
                 <td th:if="${el.service!=null}" th:text="@{Service}"/>
                 <td th:if="${el.service!=null}" th:text="${el.service.service_name}"/>
                 <td th:if="${el.service!=null}" th:text="${el.soldPrice}"/>
                 <td th:if="${el.service!=null}" th:text="${el.quantity}"/>
                 <td th:if="${el.service!=null}" th:text="${el.quantity*el.soldPrice}"/>
-                <td th:if="${el.service!=null}"><a th:href='${"/users/"+el.doneUser.id}' th:text="${el.doneUser.fname}"/></td>
-                <td th:if="${el.service!=null}"><a th:href="@{/orders/}+${el.order.id}+@{/remove/}+${el.id}"><button class="btn btn-danger" th:text="@{Delete}"/></a></td>
                 <!--PRODUCTS-->
-                <th th:if="${el.product!=null}"><a th:text="${el.product.id}" th:href="@{/products/}+${el.product.id}"/></th>
                 <td th:if="${el.product!=null}" th:text="@{Product}"/>
                 <td th:if="${el.product!=null}" th:text="${el.product.product_name}"/>
                 <td th:if="${el.product!=null}" th:text="${el.soldPrice}"/>
                 <td th:if="${el.product!=null}" th:text="${el.quantity}"/>
                 <td th:if="${el.product!=null}" th:text="${el.quantity*el.soldPrice}"/>
-                <td th:if="${el.product!=null}"><a th:href='${"/users/"+el.doneUser.id}' th:text="${el.doneUser.fname}"/></td>
-                <td th:if="${el.product!=null}"><a th:href="@{/orders/}+${el.order.id}+@{/remove/}+${el.id}"><button class="btn btn-danger" th:text="@{Delete}"/></a></td>
             </tr>
             </tbody>
         </table>
 
-        <h3 th:if="${orderOne.price>0&&orderOne.client==null}" th:text='${"Сумма: "+orderOne.getSumWithDiscount()}'/>
+        <h3 th:if="${orderOne.price>0&&orderOne.client==null}" th:text='${"Итого: "+orderOne.getSumWithDiscount()}'/>
         <h3 th:if="${orderOne.price>0&&orderOne.client!=null}" th:text='${"Сумма со скидкой: "+orderOne.getSumWithDiscount()}'/>
         <h3 th:if="${orderOne.doneUser!=null}" th:text='${"Кто сделал: "+orderOne.doneUser.getFname()+" "+orderOne.doneUser.getLname()}'/>
         <h3 th:if="${orderOne.donedate!=null}" th:text='${"Когда сделал: "+orderOne.getDoneDateByFormat()}'/>
@@ -74,30 +65,21 @@
         <h3  th:if='${orderOne.typesOfPayments!=null&&orderOne.typesOfPayments.toString().equals("cash")}' th:text='${"Способ Оплаты: Наличными"}'/>
         <h3 th:if='${orderOne.typesOfPayments!=null&&orderOne.typesOfPayments.toString().equals("contract")}' th:text='${"Способ Оплаты: Договор"}'/>
         <h3 th:if='${orderOne.typesOfPayments!=null&&orderOne.typesOfPayments.toString().equals("online")}' th:text='${"Способ Оплаты: Онлайн перевод"}'/>
-        <a th:if='${!orderOne.status.toString().equals("GIVEN")}' th:href="@{/orders/}+${orderOne.id}+@{/update}"><button type="button" class="btn btn-primary">Добавить Услугу</button></a>
-        <a th:if='${!orderOne.status.toString().equals("GIVEN")}' th:href="@{/orders/}+${orderOne.id}+@{/add/product}"><button type="button" class="btn btn-primary">Добавить Товар</button></a>
-        <a th:if='${orderOne.status.toString().equals("NOTDONE")}' th:href="@{/orders/}+${orderOne.id}+@{/done}"><button type="button" class="btn btn-warning">Исполнено</button></a>
-        <a th:if='${orderOne.status.toString().equals("DONE")&&orderOne.notified!=true}' th:href="@{/orders/}+${orderOne.id}+@{/notify}"><button type="button" class="btn btn-primary">Оповестить</button></a>
-        <a th:if='${orderOne.status.toString().equals("DONE")&&orderOne.gavedate==null}' th:href="@{/orders/}+${orderOne.id}+@{/cashier}"><button type="button" class="btn btn-success">Ожидается Платеж</button></a>
-        <a  th:if='${!orderOne.status.toString().equals("GIVEN")&&orderOne.comment==null}' th:href="@{/orders/}+${orderOne.id}+@{/comment}"><button type="button" class="btn btn-success">Добавить Комментарии</button></a>
-        <a  th:if='${orderOne.comment!=null&&!orderOne.status.toString().equals("GIVEN")}' th:href="@{/orders/}+${orderOne.id}+@{/comment/update}"><button type="button" class="btn btn-primary">Изменить Комментарии</button></a>
-        <a sec:authorize="hasAuthority('ADMIN')" th:href="@{/orders/}+${orderOne.id}+@{/remove}"><button type="button" class="btn btn-danger">Удалить</button></a>
-        <a th:href="@{/orders/}+${orderOne.id}+@{/QRCode}"><button type="button" class="btn btn-primary">QRCode</button></a>
         <br>
         <div class="w-100">&nbsp;</div>
-        <select th:if='${orderOne.status.toString().equals("GIVEN")&&orderOne.typesOfPayments==null}' class="form-control" id="type"   name="payment">
+        <select th:if='${orderOne.status.toString().equals("WENTCASHIER")&&orderOne.typesOfPayments==null}' class="form-control" id="type"   name="payment">
             <option th:value='${"/orders/"+orderOne.id+"/payment/cash"}'>Наличными</option>
             <option th:value='${"/orders/"+orderOne.id+"/payment/contract"}'>По Договору</option>
             <option th:value='${"/orders/"+orderOne.id+"/payment/online"}'>Перевод</option>
         </select>
         <br>
-        <button th:if='${orderOne.status.toString().equals("GIVEN")&&orderOne.typesOfPayments==null}' onclick="onInput()" type="button" class="btn btn-primary w-100">Выбрать</button>
+        <button th:if='${orderOne.status.toString().equals("WENTCASHIER")&&orderOne.typesOfPayments==null}' onclick="onInput()" type="button" class="btn btn-primary w-100">Выбрать</button>
     </div>
     <div th:if="${order.size()==0}" class="jumbotron">
         <h1>Не найдено</h1>
     </div>
 </main>
-    <footer th:insert="blocks/footer::footer"></footer>
+<footer th:insert="blocks/footer::footer"></footer>
 
 <script>
     function onInput() {

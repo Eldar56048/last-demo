@@ -21,13 +21,15 @@ public class Service {
     private Long Id;
     private String service_name;
     private String service_description;
+    private int percentage;
     private int price;
     public Service(){
     }
-    public Service(String service_name, String service_description, int price) {
+    public Service(String service_name, String service_description, int price,int percentage) {
         this.service_name = service_name;
         this.service_description = service_description;
         this.price = price;
+        this.percentage = percentage;
     }
 
     public Long getId() {
@@ -56,6 +58,14 @@ public class Service {
 
     public int getPrice() {
         return price;
+    }
+
+    public int getPercentage() {
+        return percentage;
+    }
+
+    public void setPercentage(int procent) {
+        this.percentage = procent;
     }
 
     public void setPrice(int price) {

@@ -26,6 +26,10 @@ import java.util.Iterator;
 @Controller
 public class MainController {
     @Autowired
+    private DiscountRepository discountRepository;
+    @Autowired
+    private ClientRepository clientRepository;
+    @Autowired
     private TypeRepository typeRepository;
     @Autowired
     private OrderRepository orderRepository;
@@ -42,15 +46,20 @@ public class MainController {
         Iterable<Type> types = typeRepository.findAll();
         Iterable<Order> orders = orderRepository.findByOrderByIdDesc();
         Iterable<com.example.demo.models.Model> models = modelRepository.findAll();
+        Iterable<Client> clients = clientRepository.findAll();
+        Iterable<Discount> discounts = discountRepository.findAll();
+        model.addAttribute("discounts",discounts);
         model.addAttribute("orders",orders);
         model.addAttribute("types",types);
         model.addAttribute("models",models);
+        model.addAttribute("clients",clients);
         return "orders";
     }
 
     @GetMapping("/")
     public String main(Model model){
-        model.addAttribute("order",new Order());
+        Iterable<User> users = userRepository.findAll();
+        model.addAttribute("users",users);
         return "profile";
     }
 
@@ -100,6 +109,14 @@ public class MainController {
 
         return "redirect:/orders";
     }*/
-
+    @GetMapping("/example")
+    public String example(Model model){
+        String name = "Сайрамбай Эльдар";
+        String[] words = name.split(" ");
+        for(String word:words){
+            System.out.println(word);
+        }
+        return "redirect:/orders";
+    }
 
 }

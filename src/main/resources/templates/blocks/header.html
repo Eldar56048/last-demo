@@ -4,13 +4,18 @@
     <h5 class="my-0 mr-md-auto font-weight-normal">WebPortal</h5>
     <nav class="my-2 my-md-0 mr-md-3">
         <a class="p-2 text-dark" href="/login">Login</a>
-        <a sec:authorize="isAuthenticated()" class="p-2 text-dark" href="/orders">Заказы</a>
+        <a sec:authorize="hasAuthority('USER')" class="p-2 text-dark" href="/orders">Заказы</a>
         <a sec:authorize="hasAuthority('MODERATOR')" class="p-2 text-dark" href="/services">Услуги</a>
         <a sec:authorize="hasAuthority('MODERATOR')" class="p-2 text-dark" href="/products">Товары</a>
-        <a sec:authorize="isAuthenticated()" class="p-2 text-dark" href="/providers">Поставщики</a>
-        <a sec:authorize="isAuthenticated()" class="p-2 text-dark" href="/types">Устройства</a>
-        <a sec:authorize="isAuthenticated()" class="p-2 text-dark" href="/models">Модели</a>
+        <a sec:authorize="hasAuthority('MODERATOR')" class="p-2 text-dark" href="/providers">Поставщики</a>
+        <a sec:authorize="hasAuthority('USER')" class="p-2 text-dark" href="/types">Устройства</a>
+        <a sec:authorize="hasAuthority('USER')" class="p-2 text-dark" href="/models">Модели</a>
         <a sec:authorize="hasAuthority('ADMIN')" class="p-2 text-dark" href="/users">Пользователи</a>
+        <a sec:authorize="hasAuthority('ADMIN')" class="p-2 text-dark" href="/">Отчёт</a>
+        <a sec:authorize="hasAuthority('ADMIN')" class="p-2 text-dark" href="/experiences">Уровни</a>
+        <a sec:authorize="hasAuthority('ADMIN')" class="p-2 text-dark" href="/clients">Клиенты</a>
+        <a sec:authorize="hasAuthority('ADMIN')" class="p-2 text-dark" href="/discounts">Скидки</a>
+        <a sec:authorize="hasAuthority('CASHIER')" class="p-2 text-dark" href="/cashier">Касса</a>
     </nav>
     <div sec:authorize="isAuthenticated()">
     <form th:action="@{/logout}" method="post">

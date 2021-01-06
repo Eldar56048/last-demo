@@ -13,6 +13,8 @@
         <input type="text" name="name" th:value="${el.service_name}" placeholder="Имя Сервиса" required class="form-control"><br>
         <textarea  name="description" th:text="${el.service_description}" placeholder="Описание Сервиса" required class="form-control"></textarea><br>
         <input type="number" name="price" th:value="${el.price}" placeholder="Цена Сервиса" required class="form-control"><br>
+        <input sec:authorize="hasAuthority('ADMIN')" type="number" name="percentage" th:value="${el.percentage}" placeholder="Процент" required class="form-control"><br>
+        <input sec:authorize="!hasAuthority('ADMIN')" type="hidden" name="percentage" th:value="${el.percentage}">
         <button type="submit" class="btn btn-primary">Update</button>
     </form>
 </div>

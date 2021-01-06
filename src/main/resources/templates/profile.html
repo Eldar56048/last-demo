@@ -10,12 +10,36 @@
 <header th:insert="blocks/header::header"/>
 
 <section sec:authorize="hasAuthority('ADMIN')" class="jumbotron text-center">
+
+    <h3>Отчет по мастерской</h3>
+    <br>
     <div class="container">
-        <h1 th:value='${"Взять отчет за определенную дату"}'/>
-        <form th:action="@{/orders/findByDate}" method="post">
+        <form th:action="@{/orders/findByDate}" method="get">
             <input type="date" name="date1" pattern="yyyy-MM-dd" class="form-control"><br>
             <input type="date" name="date2" pattern="yyyy-MM-dd" class="form-control"><br>
-            <input type="submit" class="form-control">
+            <select name="type" class="form-control">
+                <option class="form-control" value="accepted">Принято</option>
+                <option class="form-control" value="done">Сделано</option>
+                <option class="form-control" value="given">Выдано</option>
+            </select>
+            <br>
+            <button type="submit" class="btn btn-success">Сформировать</button>
+        </form>
+    </div>
+</section>
+
+<section sec:authorize="hasAuthority('ADMIN')" class="jumbotron text-center">
+    <h3>Отчет по мастеру</h3>
+    <br>
+    <div class="container">
+        <form th:action="@{/orders/findByDate-user}" method="get">
+            <input type="date" name="date1" pattern="yyyy-MM-dd" class="form-control"><br>
+            <input type="date" name="date2" pattern="yyyy-MM-dd" class="form-control"><br>
+            <select name="userid" class="form-control">
+                <option class="form-control" th:each="el:${users}" th:text='${el.lname+" "+el.fname}' th:value="${el.id}"/>
+            </select>
+            <br>
+            <button type="submit" class="btn btn-success">Сформировать</button>
         </form>
     </div>
 </section>

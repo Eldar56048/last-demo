@@ -3,6 +3,7 @@
 <head>
     <title>Отчет</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 </head>
 <body>
@@ -21,17 +22,17 @@
         </div>
     </section>-->
 
-    <div class="container">
+    <div class="container" th:if="${ordersAccepted!=null}">
         <h1>Принято</h1>
         <div class="row">
             <table class="table table-hover table-dark">
                 <thead>
                 <tr>
                     <th scope="col">#</th>
-                    <th scope="col">Accepted Date</th>
-                    <th scope="col">First Name</th>
-                    <th scope="col">Phone Number</th>
-                    <th scope="col">Status</th>
+                    <th scope="col">Дата приемки</th>
+                    <th scope="col">Имя клиента</th>
+                    <th scope="col">Тел. клиента</th>
+                    <th scope="col">Статус</th>
                     <th scope="col">Кто принял</th>
                 </tr>
                 </thead>
@@ -40,54 +41,134 @@
                     <!--                        <th scope="row" th:text="${el.id}"/>-->
                     <th><a th:text="${el.id}" th:href="@{/orders/}+${el.id}"/></th>
                     <td th:text="${el.getAcceptedDateByFormat()}"/>
-                    <td th:text="${el.name}"/>
-                    <td th:text="${el.number}"/>
+                    <td th:if="${el.client==null}" th:text="${el.name}"/>
+                    <td th:if="${el.client==null}" th:text="${el.number}"/>
+                    <th th:if="${el.client!=null}"><a th:text='${el.client.clientSurname+" "+el.client.clientName}' th:href="@{/clients/}+${el.client.id}"/></th><td th:if="${el.client!=null}" th:text="${el.client.phoneNumber}"/>
                     <td style="color: white" th:if='${el.status.toString().equals("NOTDONE")}'>Не Сделано</td>
                     <td style="color: yellow" th:if='${el.status.toString().equals("DONE")}'>Сделано</td>
                     <td style="color: lawngreen" th:if='${el.status.toString().equals("GIVEN")}'>Выдано</td>
+                    <td style="color: lawngreen" th:if='${el.status.toString().equals("WENTCASHIER")}'>Ожидается платеж</td>
                     <td><a th:text="${el.acceptedUser.fname}" th:href='${"/users/"+el.acceptedUser.id}'/></td>
                 </tr>
                 </tbody>
             </table>
         </div>
     </div>
-    <br>
-    <hr>
-    <br>
-    <div class="container">
-        <h1>Отдано</h1>
+    <br th:if="${ordersAccepted!=null}">
+    <hr th:if="${ordersAccepted!=null}">
+    <br th:if="${ordersAccepted!=null}">
+    <div class="container" th:if="${ordersDone!=null}">
+        <h1>Сделано</h1>
         <div class="row">
             <table class="table table-hover table-dark">
                 <thead>
                 <tr>
                     <th scope="col">#</th>
-                    <th scope="col">Accepted Date</th>
-                    <th scope="col">First Name</th>
-                    <th scope="col">Phone Number</th>
-                    <th scope="col">Status</th>
-                    <th scope="col">Кто принял</th>
-                    <th scope="col">Когда Отдал</th>
-                    <th scope="col">Кто Отдал</th>
-                    <th scope="col">Доход</th>
+                    <th scope="col">Исполнено</th>
+                    <th scope="col">Имя клиента</th>
+                    <th scope="col">Тел. клиента</th>
+                    <th scope="col">Статус</th>
+                    <th scope="col">Кто сделал</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="el:${ordersDone}">
+                    <!--                        <th scope="row" th:text="${el.id}"/>-->
+                    <th><a th:text="${el.id}" th:href="@{/orders/}+${el.id}"/></th>
+                    <td th:text="${el.getDoneDateByFormat()}"/>
+                    <td th:if="${el.client==null}" th:text="${el.name}"/>
+                    <td th:if="${el.client==null}" th:text="${el.number}"/>
+                    <th th:if="${el.client!=null}"><a th:text='${el.client.clientSurname+" "+el.client.clientName}' th:href="@{/clients/}+${el.client.id}"/></th><td th:if="${el.client!=null}" th:text="${el.client.phoneNumber}"/>
+                    <td style="color: white" th:if='${el.status.toString().equals("NOTDONE")}'>Не Сделано</td>
+                    <td style="color: yellow" th:if='${el.status.toString().equals("DONE")}'>Сделано</td>
+                    <td style="color: lawngreen" th:if='${el.status.toString().equals("GIVEN")}'>Выдано</td>
+                    <td style="color: lawngreen" th:if='${el.status.toString().equals("WENTCASHIER")}'>Ожидается платеж</td>
+                    <td><a th:text="${el.doneUser.fname}" th:href='${"/users/"+el.doneUser.id}'/></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <br th:if="${ordersDone!=null}">
+    <hr th:if="${ordersDone!=null}">
+    <br th:if="${ordersDone!=null}">
+    <div class="container" th:if="${ordersGaven!=null}">
+        <h1>Отдано</h1>
+        <div class="row">
+            <table id="givenTable" class="table table-hover table-dark">
+                <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Дата приемки</th>
+                    <th scope="col">Дата выдачи</th>
+                    <th scope="col">Выдал</th>
+                    <th scope="col">Сумма</th>
+                    <th scope="col">Способ оплаты</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr th:each="el:${ordersGaven}">
-                    <!--                        <th scope="row" th:text="${el.id}"/>-->
+                    <!--<th scope="row" th:text="${el.id}"/>-->
                     <th><a th:text="${el.id}" th:href="@{/orders/}+${el.id}"/></th>
                     <td th:text="${el.getAcceptedDateByFormat()}"/>
-                    <td th:text="${el.name}"/>
-                    <td th:text="${el.number}"/>
-                    <td style="color: white" th:if='${el.status.toString().equals("NOTDONE")}'>Не Сделано</td>
-                    <td style="color: yellow" th:if='${el.status.toString().equals("DONE")}'>Сделано</td>
-                    <td style="color: lawngreen" th:if='${el.status.toString().equals("GIVEN")}'>Выдано</td>
-                    <td><a th:text="${el.acceptedUser.fname}" th:href='${"/users/"+el.acceptedUser.id}'/></td>
                     <td th:text="${el.getGaveDateByFormat()}"/>
                     <td><a th:text="${el.giveUser.fname}" th:href='${"/users/"+el.giveUser.id}'/></td>
-                    <td th:text="${el.price}"/>
+                    <td th:if="${el.client==null}" th:text="${el.getSumWithDiscount()}"/>
+                    <td th:if="${el.client!=null}" th:text="${el.getSumWithDiscount()}"/>
+                    <td th:if='${el.typesOfPayments!=null&&el.typesOfPayments.toString().equals("cash")}' th:text='${"Наличными"}'/>
+                    <td th:if='${el.typesOfPayments!=null&&el.typesOfPayments.toString().equals("contract")}' th:text='${"Договор"}'/>
+                    <td th:if='${el.typesOfPayments!=null&&el.typesOfPayments.toString().equals("online")}' th:text='${"Онлайн Перевод"}'/>
+                </tr>
+                <tr>
+                    <td>Итого:</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td id="result"></td>
+                    <td></td>
                 </tr>
                 </tbody>
             </table>
+        </div>
+    </div>
+    <br th:if="${ordersGaven!=null}">
+    <hr th:if="${ordersGaven!=null}">
+    <br th:if="${ordersGaven!=null}">
+    <div class="container" th:if="${user!=null}">
+        <h1 th:text='${"Отчет пользователя "+user.fname+" "+user.lname}'/>
+        <div class="row">
+            <table id="table" class="table table-hover table-dark">
+                <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Дата приемки</th>
+                    <th scope="col">Когда Отдал</th>
+                    <th scope="col">Кто Отдал</th>
+                    <th scope="col">Доход Мастера</th>
+                    <th scope="col">Прибыль Компании</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="el:${orders}" th:if="${el.masterDoneWorkInOrder(user.id)}">
+                    <!--<th scope="row" th:text="${el.id}"/>-->
+                    <th><a th:text="${el.id}" th:href="@{/orders/}+${el.id}"/></th>
+                    <td th:text="${el.getAcceptedDateByFormat()}"/>
+                    <td th:text="${el.getGaveDateByFormat()}"/>
+                    <td><a th:text="${el.giveUser.fname}" th:href='${"/users/"+el.giveUser.id}'/></td>
+                    <td th:text="${el.getMasterIdProportion(user.id)}"/>
+                    <td th:text="${orderService.getBossProportion(el.items)}"/>
+                </tr>
+                <tr>
+                    <td>Сумма:</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td id="val"/>
+                    <td id="boss"></td>
+                </tr>
+                </tbody>
+            </table>
+
         </div>
     </div>
 
@@ -95,17 +176,32 @@
 <footer th:insert="blocks/footer::footer"></footer>
 
 <script>
-    function onInput() {
-        var val = document.getElementById("order").value;
-        var opts = document.getElementById('orders').childNodes;
-        for (var i = 0; i < opts.length; i++) {
-            if (opts[i].value === val) {
-                window.location.replace('/orders/'+opts[i].value);
-                break;
-            }
-        }
+    $(document).ready(function(){
+    var table = document.getElementById("table"), sumVal = 0.0, sumBoss = 0.0;
+    for(var i = 1; i < table.rows.length-1; i++)
+    {
+        sumVal = sumVal + parseFloat(table.rows[i].cells[4].innerHTML);
+        sumBoss = sumBoss + parseFloat(table.rows[i].cells[5].innerHTML);
     }
+    document.getElementById("val").innerHTML = sumVal;
+    document.getElementById("boss").innerHTML = sumBoss;
+    console.log(sumVal);
+
+        var tableGiven = document.getElementById("givenTable"), sumVal = 0.0,sumBoss=0.0;
+        for(var i = 1; i < table.rows.length-1; i++)
+        {
+            sumVal = sumVal + parseFloat(table.rows[i].cells[4].innerHTML);
+            sumBoss = sumBoss + parseFloat(table.rows[i].cells[5].innerHTML);
+        }
+        document.getElementById("val").innerHTML = sumVal;
+        document.getElementById("boss").innerHTML = sumBoss;
+        console.log(sumVal);
+    });
+
+
+
 </script>
 
 </body>
+
 </html>

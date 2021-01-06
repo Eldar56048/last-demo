@@ -14,23 +14,32 @@
     <section class="jumbotron text-center">
         <div class="container">
             <form th:action="@{/orders/add}" method="post">
-                <input type="text" name="client_name" placeholder="Имя клиента" required class="form-control"><br>
-                <input type="tel" name="client_number" placeholder="Номер клиента" required class="form-control"><br>
+                <input class="form-control" onchange="onClient()" list="clients" name="clientId" required id="client" placeholder="ФИО Клиента"><br>
+                <datalist  id="clients">
+                    <option th:each="el:${clients}" th:value="${el.id}" th:text='${el.phoneNumber+" "+el.discount.id+" "+el.clientSurname+" "+el.clientName+" "+el.discount.discountName}'/>
+                </datalist>
+                <input type="tel" id="phone" name="client_number" placeholder="Тел. клиента"  class="form-control"><br>
+                <select id="discounts" name="discountId" class="form-control">
+                    <option th:each="el:${discounts}" th:if='${el.discountName.equals("Стандартный")}' selected th:value="${el.id}" th:text='${el.discountName+" "+el.percentage+"%"}'/>
+                    <option th:each="el:${discounts}" th:if='${!el.discountName.equals("Стандартный")}'th:value="${el.id}" th:text='${el.discountName+" "+el.percentage+"%"}'/>
+                </select>
+                <br>
                 <input class="form-control" list="types" name="type_id" required id="type" placeholder="Выберите Тип устройства"><br>
                 <datalist  id="types">
                     <option th:each="el:${types}" th:value="${el.id}" th:text='${el.name}'/>
-                </datalist><br>
-                <input class="form-control" list="models" name="model_id" required id="model" placeholder="Выберите Модель устройства"><br>
+                </datalist>
+                <input class="form-control" list="models" name="model_id" required id="model" placeholder="Выберите Фирму-производителя"><br>
                 <datalist  id="models">
                     <option th:each="el:${models}" th:value="${el.id}" th:text='${el.name}'/>
-                </datalist><br>
+                </datalist>
+                <input class="form-control" name="modelType" placeholder="Модель Устройства" type="text" required><br>
                 <textarea  name="problem" placeholder="Проблема" required class="form-control"></textarea><br>
                 <button type="submit" class="btn btn-success">Добавить</button><br>
             </form>
         </div>
     </section>
 
-    <!--<section class="jumbotron text-center">
+    <!--<section class="jumbotron text-center">/
         <div class="container">
             <form th:action="@{/orders/findByDate}" method="post">
                 <input type="date" name="date1" pattern="yyyy-MM-dd" class="form-control"><br>
@@ -69,11 +78,14 @@
                     <tr th:each="el:${orders}">
 <!--                        <th scope="row" th:text="${el.id}"/>-->
                         <th><a th:text="${el.id}" th:href="@{/orders/}+${el.id}"/></th>
-                        <td th:text="${el.name}"/>
-                        <td th:text="${el.number}"/>
+                        <td th:if="${el.client==null}" th:text="${el.name}"/>
+                        <td th:if="${el.client==null}" th:text="${el.number}"/>
+                        <th th:if="${el.client!=null}"><a th:text='${el.client.clientSurname+" "+el.client.clientName}' th:href="@{/clients/}+${el.client.id}"/></th>
+                        <td th:if="${el.client!=null}" th:text="${el.client.phoneNumber}"/>
                         <td style="color: white" th:if='${el.status.toString().equals("NOTDONE")}'>Не Сделано</td>
                         <td style="color: yellow" th:if='${el.status.toString().equals("DONE")}'>Сделано</td>
                         <td style="color: lawngreen" th:if='${el.status.toString().equals("GIVEN")}'>Выдано</td>
+                        <td style="color: lawngreen" th:if='${el.status.toString().equals("WENTCASHIER")}'>Ожидается платеж</td>
                     </tr>
 
                     </tbody>
@@ -93,6 +105,17 @@
             if (opts[i].value === val) {
                 window.location.replace('/orders/'+opts[i].value);
                 break;
+            }
+        }
+    }
+    function onClient() {
+        var val = document.getElementById("client").value;
+        var opts = document.getElementById('clients').childNodes;
+        for (var i = 0; i < opts.length; i++) {
+            if (opts[i].value === val) {
+                var words = opts[i].textContent.split(' ');
+                document.getElementById('phone').value=words[0];
+                document.getElementById('discounts').value = words[1];
             }
         }
     }

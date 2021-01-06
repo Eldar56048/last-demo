@@ -1,0 +1,36 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security" xmlns:form="http://www.w3.org/1999/html">
+<head>
+    <title>Изменить Опыт</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body>
+
+<header th:insert="blocks/header :: header"></header>
+<div class="container">
+    <!--<form method="post" th:action="@{/users/}+${user.id}+@{/password}">
+        <input type="checkbox" id="user" class="form-control" name="vehicle1" value="Bike">
+        <label for="user">User</label><br>
+        <input type="checkbox" id="admin" class="form-control" name="vehicle2" value="Car">
+        <label for="admin">Admin</label><br>
+    </form>-->
+
+    <form th:action="@{/users/}+${user.id}+@{/experience}" method="post">
+        <div class="checkbox" th:each="el : ${experiences}">
+            <label th:text="${el.experience}"></label>
+            <input th:if="${user.experienceModel.experience.equals(el.experience)}" checked  name="experienceid" type="radio" class="form-control" th:value="${el.id}"/>
+            <input th:if="${user.experienceModel.experience.equals(el.experience)==false}" name="experienceid"  type="radio" class="form-control" th:value="${el.id}"/>
+        </div>
+        <!--<select class="form-control" th:field="*{experienceModel.experience}">
+            <option th:if="${user.experienceModel.experience.equals(el.experience)}" selected class="form-control" th:each="el:${experiences}" th:value="${el}" th:text="${el.experience}"/>
+            <option th:if="${user.experienceModel.experience.equals(el.experience)==false}" class="form-control" th:each="el:${experiences}" th:value="${el}" th:text="${el.experience}"/>
+        </select>-->
+        <button type="submit" class="btn btn-primary">Update</button>
+    </form>
+
+</div>
+<footer th:insert="blocks/footer::footer"></footer>
+</body>
+</html>

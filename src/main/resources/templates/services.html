@@ -32,6 +32,7 @@
                     <th scope="col">Service Name</th>
                     <th scope="col">Service Description</th>
                     <th scope="col">Price</th>
+                    <th sec:authorize="hasAuthority('ADMIN')" scope="col">Percentage</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -41,8 +42,8 @@
                     <td th:text="${el.service_name}"/>
                     <td th:text="${el.service_description}"/>
                     <td th:text="${el.price}"/>
+                    <td sec:authorize="hasAuthority('ADMIN')" th:text="${el.percentage}"/>
                 </tr>
-
                 </tbody>
             </table>
 

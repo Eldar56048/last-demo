@@ -26,7 +26,11 @@ public class OrderController {
     @Autowired
     private Smsc smsc;
     @Autowired
+    private ClientRepository clientRepository;
+    @Autowired
     private ServiceRepository serviceRepository;
+    @Autowired
+    private DiscountRepository discountRepository;
     @Autowired
     private StorageRepository storageRepository;
     @Autowired
@@ -37,12 +41,36 @@ public class OrderController {
     private ModelRepository modelRepository;
     @Autowired
     private OrderService orderService;
-
+    @Autowired
+    private UserRepository userRepository;
     @PostMapping("/orders/add")
-    public String ordersAdd(@AuthenticationPrincipal User user, @RequestParam String client_name, @RequestParam String client_number, @RequestParam String problem, @RequestParam Long type_id, @RequestParam Long model_id, Model model) {
+    public String ordersAdd(@AuthenticationPrincipal User user, @RequestParam String client_number,@RequestParam String clientId, @RequestParam String problem, @RequestParam Long type_id, @RequestParam Long model_id, Model model,@RequestParam Long discountId,@RequestParam String modelType) {
         Type type = typeRepository.getAllById(type_id);
         com.example.demo.models.Model model1 = modelRepository.getAllById(model_id);
-        Order order = new Order(client_name, client_number, problem, user, type, model1);
+        Discount discount = discountRepository.getAllById(discountId);
+        Order order = null;
+        Client client = null;
+        if((discount.getDiscountName().equals("Стандартный")==false)&&(orderService.onlyDigits(clientId,clientId.length())==false)){
+            String surname = "";
+            String name = "";
+            String[] words = clientId.split(" ");
+            surname = words[0];
+            name = words[1];
+            client = new Client(name,surname,client_number,discount);
+            clientRepository.save(client);
+            order = new Order(client,problem,user,type,model1,modelType);
+        }
+        else if(orderService.onlyDigits(clientId,clientId.length())){
+            client = clientRepository.getAllById(Long.parseLong(clientId));
+            client.setDiscount(discount);
+            client.setPhoneNumber(client_number);
+            clientRepository.save(client);
+
+            order = new Order(client,problem,user,type,model1,modelType);
+        }
+        else {
+            order = new Order(clientId, client_number, problem, user, type, model1,modelType,discount.getDiscountName(),discount.getPercentage());
+        }
         order.setNotified(false);
         orderRepository.save(order);
         return "redirect:/orders";
@@ -75,7 +103,7 @@ public class OrderController {
     }
 
     @PostMapping("/orders/{id}/add/product")
-    public String addProductToOrderPost(@PathVariable(value = "id") long id, @RequestParam long product_id, @RequestParam int quantity, Model model) {
+    public String addProductToOrderPost(@AuthenticationPrincipal User user,@PathVariable(value = "id") long id, @RequestParam long product_id, @RequestParam int quantity, Model model) {
         Order order = orderRepository.getAllById(id);
         Product product = productRepository.getAllById(product_id);
         Storage storage = storageRepository.getAllByProductId(product_id);
@@ -84,7 +112,7 @@ public class OrderController {
             model.addAttribute("message", message);
             return "redirect:/orders/" + id + "/add/product";
         }
-        OrderItem orderItem = new OrderItem(quantity, order, product);
+        OrderItem orderItem = new OrderItem(quantity, order, product,user, (int) orderService.getLastPrice(product));
         order.addOrderItem(orderItem);
         storage.setQuantity(storage.getQuantity() - quantity);
         RecievingHistory recievingHistory = new RecievingHistory(orderItem);
@@ -95,10 +123,10 @@ public class OrderController {
     }
 
     @PostMapping("/orders/{id}/add")
-    public String addService(@PathVariable(value = "id") long id, @RequestParam long service_id, @RequestParam int quantity, Model model) throws ClassNotFoundException {
+    public String addService(@AuthenticationPrincipal User user,@PathVariable(value = "id") long id, @RequestParam long service_id, @RequestParam int quantity, Model model) throws ClassNotFoundException {
         Order order = orderRepository.findById(id).orElseThrow(() -> new ClassNotFoundException());
         Service service = serviceRepository.findById(service_id).orElseThrow(() -> new ClassNotFoundException());
-        order.addOrderItem(new OrderItem(quantity, order, service));
+        order.addOrderItem(new OrderItem(quantity, order, service,user));
         orderRepository.save(order);
         return "redirect:/orders/" + order.getId();
     }
@@ -108,6 +136,7 @@ public class OrderController {
         Order order = orderRepository.getAllById(id);
         order.setStatus(Status.DONE);
         order.setDoneUser(user);
+        order.setDonedate(new java.util.Date());
         orderRepository.save(order);
         return "redirect:/orders/" + id;
     }
@@ -147,11 +176,11 @@ public class OrderController {
         return "redirect:/orders/" + id;
     }
 
-    @GetMapping("/orders/{id}/given")
+    @GetMapping("/orders/{id}/cashier")
     public String orderGiven(@AuthenticationPrincipal User user, @PathVariable(value = "id") long id, Model model) throws ClassNotFoundException {
         Order order = orderRepository.findById(id).orElseThrow(() -> new ClassNotFoundException());
-        order.setGavedate(new Date());
-        order.setStatus(Status.GIVEN);
+        /*order.setGavedate(new Date());*/
+        order.setStatus(Status.WENTCASHIER);
         order.setGiveUser(user);
         orderRepository.save(order);
         return "redirect:/orders/" + id;
@@ -235,15 +264,87 @@ public class OrderController {
     @PostMapping("/orders/findByDate")
     public String getOrdersByDate(@DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("date1") Date date1,@DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("date2") Date date2, Model model){
         Calendar cal = Calendar.getInstance();
-        System.out.println(date2);
         cal.setTime(date2);
         cal.add(Calendar.DATE ,1);
         date2 = cal.getTime();
-        System.out.println(date2);
         Iterable<Order> ordersAcceptDate = orderRepository.findAllByAccepteddateBetween(date1,date2);
         Iterable<Order> ordersGavenDate = orderRepository.findAllByGavedateBetween(date1,date2);
         model.addAttribute("ordersAccepted",ordersAcceptDate);
         model.addAttribute("ordersGaven",ordersGavenDate);
+        model.addAttribute("orderService",orderService);
         return "report";
     }
+
+    @GetMapping("/orders/findByDate")
+    public String getOrdersByDateGet(@DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("date1") Date date1,@DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("date2") Date date2,@RequestParam String type, Model model){
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date2);
+        cal.add(Calendar.DATE ,1);
+        date2 = cal.getTime();
+        if(type.equals("accepted")){
+            Iterable<Order> ordersAcceptDate = orderRepository.findAllByAccepteddateBetween(date1,date2);
+            model.addAttribute("ordersAccepted",ordersAcceptDate);
+        }
+        else if(type.equals("given")){
+            Iterable<Order> ordersGavenDate = orderRepository.findAllByGavedateBetween(date1,date2);
+            model.addAttribute("ordersGaven",ordersGavenDate);
+        }
+        else if(type.equals("done")){
+            Iterable<Order> ordersDoneDate = orderRepository.findAllByDonedateBetween(date1,date2);
+            model.addAttribute("ordersDone",ordersDoneDate);
+        }
+        model.addAttribute("orderService",orderService);
+        return "report";
+    }
+
+    @PostMapping("/orders/findByDate-user")
+    public String getOrdersByDateAndUsers(@DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("date1") Date date1,@DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("date2") Date date2,@RequestParam Long userid, Model model){
+        User user = userRepository.getById(userid);
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date2);
+        cal.add(Calendar.DATE ,1);
+        date2 = cal.getTime();
+        Iterable<Order> orders = orderRepository.findAllByGavedateBetween(date1,date2);
+        model.addAttribute("orders",orders);
+        model.addAttribute("user",user);
+        model.addAttribute("orderService",orderService);
+        return "report";
+    }
+
+    @GetMapping("/orders/findByDate-user")
+    public String getOrdersByDateAndUsersGet(@DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("date1") Date date1,@DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("date2") Date date2,@RequestParam Long userid, Model model){
+        User user = userRepository.getById(userid);
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date2);
+        cal.add(Calendar.DATE ,1);
+        date2 = cal.getTime();
+        Iterable<Order> orders = orderRepository.findAllByGavedateBetween(date1,date2);
+        model.addAttribute("orders",orders);
+        model.addAttribute("user",user);
+        model.addAttribute("orderService",orderService);
+        return "report";
+    }
+
+    @GetMapping("/orders/{id}/payment/{type}")
+    public String payment(@PathVariable(value = "id") Long id, @PathVariable(value = "type") String type,Model model){
+        Order order = orderRepository.getAllById(id);
+        TypesOfPayments typesOfPayments=TypesOfPayments.cash;
+        switch (type){
+            case "cash":
+                typesOfPayments = TypesOfPayments.cash;
+                break;
+            case "online":
+                typesOfPayments = TypesOfPayments.online;
+                break;
+            case "contract":
+                typesOfPayments = TypesOfPayments.contract;
+                break;
+        }
+        order.setTypesOfPayments(typesOfPayments);
+        order.setStatus(Status.GIVEN);
+        order.setGavedate(new Date());
+        orderRepository.save(order);
+        return "redirect:/cashier";
+    }
+
 }

@@ -1,0 +1,83 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml"  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <title th:text="${title}"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body>
+
+<header th:insert="blocks/header :: header"></header>
+
+<main role="main">
+
+    <section class="jumbotron text-center">
+        <div class="container">
+            <form th:action="@{/clients/add}" method="post">
+                <input type="text" name="clientName" placeholder="Имя клиента" required class="form-control"><br>
+                <input type="text" name="clientSurname" placeholder="Фамилия клиента" required class="form-control"><br>
+                <input type="tel" name="phoneNumber" placeholder="Тел. клиента" required class="form-control"><br>
+                <select name="discountId" required class="form-control"><br>
+                    <option th:each="el:${discounts}"  th:value="${el.id}" th:text='${el.discountName+" "+el.percentage+"%"}' class="form-control" />
+                </select>
+                <button type="submit" class="btn btn-success">Добавить</button><br>
+            </form>
+        </div>
+    </section>
+
+
+    <section class="jumbotron text-center">
+        <div class="container">
+            <input list="clients" class="form-control" name="client" onchange="onInput()" id="client" placeholder="Choose Client">
+            <datalist  id="clients">
+                <option th:each="el:${clients}" name="id" th:value='${el.id}' th:text='${"№"+el.id+" "+el.clientName+" "+el.clientSurname+" "+el.phoneNumber}'/>
+            </datalist>
+        </div>
+    </section>
+
+    <div class="container">
+        <div class="row">
+            <table class="table table-hover table-dark">
+                <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Имя</th>
+                    <th scope="col">Фамилия</th>
+                    <th scope="col">Тел. Номер</th>
+                    <th scope="col">Скидка</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="el:${clients}">
+                    <!--                        <th scope="row" th:text="${el.id}"/>-->
+                    <th><a th:text="${el.id}" th:href="@{/clients/}+${el.id}"/></th>
+                    <td th:text="${el.clientName}"/>
+                    <td th:text="${el.clientSurname}"/>
+                    <td th:text="${el.phoneNumber}"/>
+                    <td th:text="${el.discount.discountName}"/>
+                </tr>
+
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+
+</main>
+<footer th:insert="blocks/footer::footer"></footer>
+
+<script>
+    function onInput() {
+        var val = document.getElementById("client").value;
+        var opts = document.getElementById('clients').childNodes;
+        for (var i = 0; i < opts.length; i++) {
+            if (opts[i].value === val) {
+                window.location.replace('/clients/'+opts[i].value);
+                break;
+            }
+        }
+    }
+</script>
+
+</body>
+</html>

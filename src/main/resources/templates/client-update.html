@@ -1,0 +1,25 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml"  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <title>Изменить Информацию о Клиенте</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body>
+
+<header th:insert="blocks/header :: header"></header>
+<div class="container">
+    <form method="post" th:action="@{/clients/}+${client.id}+@{/update}">
+        <input type="text" name="clientName" th:value="${client.clientName}" placeholder="Имя" required class="form-control"><br>
+        <input type="text" name="clientSurname" th:value="${client.clientSurname}" placeholder="Фамилия" required class="form-control"><br>
+        <input type="text" name="phoneNumber" th:value="${client.phoneNumber}" placeholder="Тел. Клиента" required class="form-control"><br>
+        <select name="discountId" required class="form-control"><br>
+            <option th:each="el:${discounts}" th:if="${client.discount.id==el.id}" th:value="${el.id}" th:text='${el.discountName+" "+el.percentage+"%"}' selected class="form-control" />
+            <option th:each="el:${discounts}" th:if="${client.discount.id!=el.id}" th:value="${el.id}" th:text='${el.discountName+" "+el.percentage+"%"}' class="form-control" />
+        </select>
+        <button type="submit" class="btn btn-primary">Update</button>
+    </form>
+</div>
+<footer th:insert="blocks/footer::footer"></footer>
+</body>
+</html>

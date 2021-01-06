@@ -13,6 +13,7 @@
         <h3 th:text='${"Имя Cервиса: "+serviceOne.service_name}'/>
         <h3 th:text='${"Описание Сервиса: "+serviceOne.service_description}'/>
         <h3 th:text='${"Цена Услуги: "+serviceOne.price}'/>
+        <h3 sec:authorize="hasAuthority('ADMIN')" th:text='${"Процент: "+serviceOne.percentage}'/>
         <a th:href="@{/services/}+${serviceOne.id}+@{/update}"><button type="button" class="btn btn-primary">Изменить</button></a>
         <a th:href="@{/services/}+${serviceOne.id}+@{/remove}"><button type="button" class="btn btn-danger">Удалить</button></a>
     </div>

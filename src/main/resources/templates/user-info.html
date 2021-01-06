@@ -14,9 +14,11 @@
         <h3 th:text='${"Фамилия: "+user.lname}'/>
         <h3 th:text='${"Логин: "+user.username}'/>
         <h3 th:text='${"Телефон Номер: "+user.phoneNumber}'/>
+        <h3 th:text='${"Уровень: "+user.experienceModel.experience.toString()}'/>
         <a th:href="@{/users/}+${user.id}+@{/password}"><button type="button" class="btn btn-primary">Изменить Пароль</button></a>
         <a th:href="@{/users/}+${user.id}+@{/phoneNumber}"><button type="button" class="btn btn-primary">Изменить Номер телефона</button></a>
         <a th:href="@{/users/}+${user.id}+@{/roles}"><button type="button" class="btn btn-primary">Роли</button></a>
+        <a th:href="@{/users/}+${user.id}+@{/experience}"><button type="button" class="btn btn-success">Опыт</button></a>
         <a th:href="@{/users/}+${user.id}+@{/remove}"><button type="button" class="btn btn-danger">Удалить</button></a>
     </div>
     <div th:if="${user==null}" class="jumbotron">

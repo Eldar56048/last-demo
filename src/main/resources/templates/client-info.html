@@ -1,0 +1,50 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml"  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <title>Информация о Клиенте</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body>
+
+<header th:insert="blocks/header :: header"></header>
+<main role="main" class="container">
+    <div  class="jumbotron">
+        <h3 th:text='${"ФИО: "+client.clientName+" "+client.clientSurname}'/>
+        <h3 th:text='${"Тел. Номер: "+client.phoneNumber}'/>
+        <h3 th:text='${"Скидка: "+client.discount.discountName+" "+client.discount.percentage+"%"}'/>
+        <a th:href="@{/clients/}+${client.id}+@{/update}"><button type="button" class="btn btn-primary">Изменить</button></a>
+        <a th:href="@{/clients/}+${client.id}+@{/remove}"><button type="button" class="btn btn-danger">Удалить</button></a>
+    </div>
+    <div class="container">
+        <div class="row">
+            <table class="table table-hover table-dark">
+                <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Дата приемки</th>
+                    <th scope="col">Сумма</th>
+                    <th scope="col">Статус</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="el:${orders}">
+                    <!--                        <th scope="row" th:text="${el.id}"/>-->
+                    <th><a th:text="${el.id}" th:href="@{/orders/}+${el.id}"/></th>
+                    <td th:text="${el.getAcceptedDateByFormat()}"/>
+                    <td th:text="${el.getSumWithDiscount()}"/>
+                    <td style="color: white" th:if='${el.status.toString().equals("NOTDONE")}'>Не Сделано</td>
+                    <td style="color: yellow" th:if='${el.status.toString().equals("DONE")}'>Сделано</td>
+                    <td style="color: lawngreen" th:if='${el.status.toString().equals("GIVEN")}'>Выдано</td>
+                    <td style="color: lawngreen" th:if='${el.status.toString().equals("WENTCASHIER")}'>Ожидается платеж</td>
+                </tr>
+
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+</main>
+<footer th:insert="blocks/footer::footer"></footer>
+</body>
+</html>
