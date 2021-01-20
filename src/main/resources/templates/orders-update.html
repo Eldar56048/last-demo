@@ -1,0 +1,59 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml"  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <title>Обновить Заказ</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body>
+
+<header th:insert="blocks/header :: header"></header>
+<div class="container" >
+    <form method="post" th:action="@{/orders/}+@{update/}+${order.id}">
+        <input class="form-control" th:if="${order.client==null}" onchange="onClient()" list="clients" name="clientId" th:value="${order.name}" required id="client" placeholder="ФИО Клиента">
+        <input class="form-control" th:if="${order.client!=null}" onchange="onClient()" list="clients" name="clientId" th:value='${order.client.id}' required id="client" placeholder="ФИО Клиента">
+        <br>
+        <datalist  id="clients">
+            <option th:each="el:${clients}"  th:value="${el.id}" th:text='${el.phoneNumber+" "+el.discount.id+" "+el.clientSurname+" "+el.clientName+" "+el.discount.discountName}'/>
+        </datalist>
+        <input type="tel" th:if="${order.client==null}" th:value="${order.number}" id="phone" name="client_number" placeholder="Тел. клиента"  class="form-control">
+        <input type="tel" th:if="${order.client!=null}" th:value="${order.client.phoneNumber}" id="phone" name="client_number" placeholder="Тел. клиента"  class="form-control"><br>
+        <select id="discounts" name="discountId" class="form-control">
+            <option th:each="el:${discounts}" th:if='${order.client!=null&&order.client.discount.id==el.id}' selected th:value="${el.id}" th:text='${el.discountName+" "+el.percentage+"%"}'/>
+            <option th:each="el:${discounts}" th:if='${order.client!=null&&order.client.discount.id!=el.id}'th:value="${el.id}" th:text='${el.discountName+" "+el.percentage+"%"}'/>
+            <option th:each="el:${discounts}" th:if='${order.client==null&&el.discountName.equals("Стандартный")}' selected th:value="${el.id}" th:text='${el.discountName+" "+el.percentage+"%"}'/>
+            <option th:each="el:${discounts}" th:if='${order.client==null&&!el.discountName.equals("Стандартный")}'th:value="${el.id}" th:text='${el.discountName+" "+el.percentage+"%"}'/>
+        </select>
+        <br>
+        <select class="form-control" id="types" name="typeId">
+            <option th:each="el:${types}" th:if="${order.type.id==el.id}" selected th:value="${el.id}" th:text='${el.name}'/>
+            <option th:each="el:${types}" th:if="${order.type.id!=el.id}" th:value="${el.id}" th:text='${el.name}'/>
+        </select><br>
+        <select class="form-control" name="modelId">
+            <option  th:each="el:${models}" th:if="${order.model.id==el.id}" selected th:value="${el.id}" th:text='${el.name}'/>
+            <option  th:each="el:${models}" th:if="${order.model.id!=el.id}" th:value="${el.id}" th:text='${el.name}'/>
+        </select><br>
+        <input class="form-control" name="modelType" th:value="${order.modelCompany}" placeholder="Модель Устройства" type="text" required><br>
+        <textarea  th:text="${order.problem}" name="problem" placeholder="Проблема" required class="form-control"></textarea><br>
+        <button type="submit" class="btn btn-primary">Update</button>
+    </form>
+</div>
+<footer th:insert="blocks/footer::footer"></footer>
+
+<script>
+    function onClient() {
+        var val = document.getElementById("client").value;
+        var opts = document.getElementById('clients').childNodes;
+        for (var i = 0; i < opts.length; i++) {
+            if (opts[i].value === val) {
+                var words = opts[i].textContent.split(' ');
+                document.getElementById('phone').value=words[0];
+                document.getElementById('discounts').value = words[1];
+            }
+        }
+    }
+</script>
+
+
+</body>
+</html>

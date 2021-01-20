@@ -81,6 +81,7 @@
         <a th:if='${orderOne.status.toString().equals("DONE")&&orderOne.gavedate==null}' th:href="@{/orders/}+${orderOne.id}+@{/cashier}"><button type="button" class="btn btn-success">Ожидается Платеж</button></a>
         <a  th:if='${!orderOne.status.toString().equals("GIVEN")&&orderOne.comment==null}' th:href="@{/orders/}+${orderOne.id}+@{/comment}"><button type="button" class="btn btn-success">Добавить Комментарии</button></a>
         <a  th:if='${orderOne.comment!=null&&!orderOne.status.toString().equals("GIVEN")}' th:href="@{/orders/}+${orderOne.id}+@{/comment/update}"><button type="button" class="btn btn-primary">Изменить Комментарии</button></a>
+        <a sec:authorize="hasAuthority('ADMIN')" th:href="@{/orders}+@{/update/}+${orderOne.id}"><button type="button" class="btn btn-primary">Изменить</button></a>
         <a sec:authorize="hasAuthority('ADMIN')" th:href="@{/orders/}+${orderOne.id}+@{/remove}"><button type="button" class="btn btn-danger">Удалить</button></a>
         <a th:href="@{/orders/}+${orderOne.id}+@{/QRCode}"><button type="button" class="btn btn-primary">QRCode</button></a>
         <br>

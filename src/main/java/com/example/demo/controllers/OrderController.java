@@ -84,6 +84,55 @@ public class OrderController {
         model.addAttribute("order", result);
         return "order-info";
     }
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @GetMapping("/orders/update/{id}")
+    public String getOrderUpdatePage(@PathVariable(value = "id") long id, Model model){
+        model.addAttribute("clients",clientRepository.findAll());
+        model.addAttribute("types",typeRepository.findAll());
+        model.addAttribute("models",modelRepository.findAll());
+        model.addAttribute("order",orderRepository.getAllById(id));
+        model.addAttribute("discounts",discountRepository.findAll());
+        return "orders-update";
+    }
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @PostMapping("/orders/update/{id}")
+    public String orderUpdate(@PathVariable(value = "id") long id, Model model,@RequestParam String problem,@RequestParam String clientId,@RequestParam String client_number,@RequestParam long modelId,@RequestParam long typeId,@RequestParam String modelType,@RequestParam long discountId){
+        Order order = orderRepository.getAllById(id);
+        Discount discount = discountRepository.getAllById(discountId);
+        Client client = null;
+        if((discount.getDiscountName().equals("Стандартный")==false)&&(orderService.onlyDigits(clientId,clientId.length())==false)){
+            String surname = "";
+            String name = "";
+            String[] words = clientId.split(" ");
+            surname = words[0];
+            name = words[1];
+            client = new Client(name,surname,client_number,discount);
+            clientRepository.save(client);
+            order.setClient(client);
+        }
+        else if(orderService.onlyDigits(clientId,clientId.length())){
+            client = clientRepository.getAllById(Long.parseLong(clientId));
+            client.setDiscount(discount);
+            client.setPhoneNumber(client_number);
+            clientRepository.save(client);
+            order.setClient(client);
+            order.setNumber(client_number);
+        }
+        else {
+            order.setClient(null);
+            order.setName(clientId);
+            order.setNumber(client_number);
+        }
+        order.setDiscountName(discount.getDiscountName());
+        order.setDiscountPercent(discount.getPercentage());
+        order.setType(typeRepository.getAllById(typeId));
+        order.setModel(modelRepository.getAllById(modelId));
+        order.setModelCompany(modelType);
+        order.setProblem(problem);
+        orderRepository.save(order);
+        return "redirect:/orders/"+id;
+    }
+
 
     @GetMapping("/orders/{id}/update")
     public String orderUpdateGet(@PathVariable(value = "id") long id, Model model) {
@@ -101,7 +150,6 @@ public class OrderController {
         model.addAttribute("order", order);
         return "order-add-product";
     }
-
     @PostMapping("/orders/{id}/add/product")
     public String addProductToOrderPost(@AuthenticationPrincipal User user,@PathVariable(value = "id") long id, @RequestParam long product_id, @RequestParam int quantity, Model model) {
         Order order = orderRepository.getAllById(id);

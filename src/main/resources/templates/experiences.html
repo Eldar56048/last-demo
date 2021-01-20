@@ -38,5 +38,22 @@
     </div>
 </main>
 <footer th:insert="blocks/footer::footer"></footer>
+<script>
+    $(document).ready(function(){
+        var show = false;
+        $("#formAdd").hide();
+        $("#show").click(function(){
+            if(show==false) {
+                $("#formAdd").show();
+                show = true;
+            }
+            else {
+                $("#formAdd").hide();
+                show = false;
+            }
+
+        });
+    });
+</script>
 </body>
 </html>

@@ -8,10 +8,10 @@
 <body>
 
 <header th:insert="blocks/header :: header"></header>
-
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <main role="main">
 
-    <section class="jumbotron text-center">
+    <section id="formAdd" class="jumbotron text-center">
         <div class="container">
             <form th:action="@{/services/add}" method="post">
                 <input type="text" name="name" placeholder="Имя Сервиса" required class="form-control"><br>
@@ -21,7 +21,11 @@
             </form>
         </div>
     </section>
-
+    <div class="container d-flex align-items-center justify-content-center margin-bottom-20">
+        <br>
+        <button id="show" class="btn btn-primary">Добавить Услугу</button>
+        <br>
+    </div>
     <div class="container">
 
         <div class="row">
@@ -51,5 +55,22 @@
     </div>
 </main>
 <footer th:insert="blocks/footer::footer"></footer>
+<script>
+    $(document).ready(function(){
+        var show = false;
+        $("#formAdd").hide();
+        $("#show").click(function(){
+            if(show==false) {
+                $("#formAdd").show();
+                show = true;
+            }
+            else {
+                $("#formAdd").hide();
+                show = false;
+            }
+
+        });
+    });
+</script>
 </body>
 </html>
