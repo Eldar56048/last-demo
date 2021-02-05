@@ -105,7 +105,12 @@ public class OrderController {
             String name = "";
             String[] words = clientId.split(" ");
             surname = words[0];
-            name = words[1];
+            if(words.length<=1){
+                name="";
+            }
+            else{
+                name = words[1];
+            }
             client = new Client(name,surname,client_number,discount);
             clientRepository.save(client);
             order.setClient(client);
@@ -234,7 +239,7 @@ public class OrderController {
         return "redirect:/orders/" + id;
     }
 
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAuthority('MODERATOR')")
     @GetMapping("/orders/{id}/remove")
     public String orderRemove(@PathVariable(value = "id") long id, Model model) throws ClassNotFoundException {
         orderRepository.deleteById(id);
@@ -387,12 +392,50 @@ public class OrderController {
             case "contract":
                 typesOfPayments = TypesOfPayments.contract;
                 break;
+            case "adverb":
+                typesOfPayments = TypesOfPayments.adverb;
+                break;
         }
         order.setTypesOfPayments(typesOfPayments);
         order.setStatus(Status.GIVEN);
         order.setGavedate(new Date());
         orderRepository.save(order);
         return "redirect:/cashier";
+    }
+
+    @GetMapping("/orders/adverb")
+    public String getAdverbOrders(Model model){
+        Iterable<Order> orders = orderRepository.findAllByTypesOfPayments(TypesOfPayments.adverb);
+        model.addAttribute("orders",orders);
+        return "orders-adverb";
+    }
+
+    @GetMapping("/orders/{id}/payment/edit")
+    public String getEditPaymentPage(@PathVariable(value = "id") long id,Model model){
+        Order order = orderRepository.getAllById(id);
+        model.addAttribute("order",order);
+        return "order-payment-update";
+    }
+
+    @PostMapping("/orders/{id}/payment/edit")
+    public String updatePaymentType(@PathVariable(value = "id") long id,@RequestParam String payment, Model model){
+        Order order = orderRepository.getAllById(id);
+        switch (payment){
+            case "cash":
+                order.setTypesOfPayments(TypesOfPayments.cash);
+                break;
+            case "online":
+                order.setTypesOfPayments(TypesOfPayments.online);
+                break;
+            case "contract":
+                order.setTypesOfPayments(TypesOfPayments.contract);
+                break;
+            case "adverb":
+                order.setTypesOfPayments(TypesOfPayments.adverb);
+                break;
+        }
+        orderRepository.save(order);
+        return "redirect:/cashier/order/"+order.getId();
     }
 
 }

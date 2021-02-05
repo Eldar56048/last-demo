@@ -1,0 +1,100 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml"  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <title>Долги</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body>
+
+<header th:insert="blocks/header :: header"></header>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<main role="main">
+
+
+    <section class="jumbotron text-center">
+        <div class="container">
+            <input list="orders" class="form-control" name="order" onchange="onInput()" id="order" placeholder="Choose Order">
+            <datalist  id="orders">
+                <option th:each="el:${orders}" name="id" th:value='${el.id}' th:text='${"№"+el.id+" "+el.name+" "+el.number+" "+el.getDateByFormat()}'/>
+            </datalist>
+        </div>
+    </section>
+
+    <div class="container">
+        <div class="row">
+            <table class="table table-hover table-dark">
+                <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">First Name</th>
+                    <th scope="col">Устройство</th>
+                    <th scope="col">Phone Number</th>
+                    <th scope="col">Способ оплаты</th>
+                    <th scope="col">Изменить</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="el:${orders}">
+                    <!--                        <th scope="row" th:text="${el.id}"/>-->
+                    <th><a th:text="${el.id}" th:href="@{/orders/}+${el.id}"/></th>
+                    <td th:if="${el.client==null}" th:text="${el.name}"/>
+                    <th th:if="${el.client!=null}"><a th:text='${el.client.clientSurname+" "+el.client.clientName}' th:href="@{/clients/}+${el.client.id}"/></th>
+                    <td th:text="${el.type.name}"/>
+                    <td th:if="${el.client==null}" th:text="${el.number}"/>
+                    <td th:if="${el.client!=null}" th:text="${el.client.phoneNumber}"/>
+                    <td th:if='${el.typesOfPayments!=null&&el.typesOfPayments.toString().equals("adverb")}' th:text='${"Долг"}'/>
+                    <td><a th:href='${"/orders/"+el.id+"/payment/edit"}'><button class="btn btn-primary">Изменить</button></a></td>
+                </tr>
+
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+
+</main>
+<footer th:insert="blocks/footer::footer"></footer>
+
+<script>
+    function onInput() {
+        var val = document.getElementById("order").value;
+        var opts = document.getElementById('orders').childNodes;
+        for (var i = 0; i < opts.length; i++) {
+            if (opts[i].value === val) {
+                window.location.replace('/orders/'+opts[i].value);
+                break;
+            }
+        }
+    }
+    function onClient() {
+        var val = document.getElementById("client").value;
+        var opts = document.getElementById('clients').childNodes;
+        for (var i = 0; i < opts.length; i++) {
+            if (opts[i].value === val) {
+                var words = opts[i].textContent.split(' ');
+                document.getElementById('phone').value=words[0];
+                document.getElementById('discounts').value = words[1];
+            }
+        }
+    }
+</script>
+<script>
+    $(document).ready(function(){
+        var show = false;
+        $("#formAdd").hide();
+        $("#show").click(function(){
+            if(show==false) {
+                $("#formAdd").show();
+                show = true;
+            }
+            else {
+                $("#formAdd").hide();
+                show = false;
+            }
+
+        });
+    });
+</script>
+</body>
+</html>

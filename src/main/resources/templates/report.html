@@ -118,6 +118,7 @@
                     <td th:if='${el.typesOfPayments!=null&&el.typesOfPayments.toString().equals("cash")}' th:text='${"Наличными"}'/>
                     <td th:if='${el.typesOfPayments!=null&&el.typesOfPayments.toString().equals("contract")}' th:text='${"Договор"}'/>
                     <td th:if='${el.typesOfPayments!=null&&el.typesOfPayments.toString().equals("online")}' th:text='${"Онлайн Перевод"}'/>
+                    <td th:if='${el.typesOfPayments!=null&&el.typesOfPayments.toString().equals("adverb")}' th:text='${"Долг"}'/>
                 </tr>
                 <tr>
                     <td>Итого:</td>

@@ -16,6 +16,7 @@
         <a sec:authorize="hasAuthority('ADMIN')" class="p-2 text-dark" href="/clients">Клиенты</a>
         <a sec:authorize="hasAuthority('ADMIN')" class="p-2 text-dark" href="/discounts">Скидки</a>
         <a sec:authorize="hasAuthority('CASHIER')" class="p-2 text-dark" href="/cashier">Касса</a>
+        <a sec:authorize="hasAuthority('CASHIER')" class="p-2 text-dark" href="/orders/adverb">Долг</a>
     </nav>
     <div sec:authorize="isAuthenticated()">
     <form th:action="@{/logout}" method="post">

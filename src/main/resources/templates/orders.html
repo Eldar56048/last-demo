@@ -18,7 +18,7 @@
                 <datalist  id="clients">
                     <option th:each="el:${clients}" th:value="${el.id}" th:text='${el.phoneNumber+" "+el.discount.id+" "+el.clientSurname+" "+el.clientName+" "+el.discount.discountName}'/>
                 </datalist>
-                <input type="tel" id="phone" name="client_number" placeholder="Тел. клиента"  class="form-control"><br>
+                <input type="tel"  id="phone" name="client_number" placeholder="Тел. клиента"  class="form-control"><br>
                 <select id="discounts" name="discountId" class="form-control">
                     <option th:each="el:${discounts}" th:if='${el.discountName.equals("Стандартный")}' selected th:value="${el.id}" th:text='${el.discountName+" "+el.percentage+"%"}'/>
                     <option th:each="el:${discounts}" th:if='${!el.discountName.equals("Стандартный")}'th:value="${el.id}" th:text='${el.discountName+" "+el.percentage+"%"}'/>

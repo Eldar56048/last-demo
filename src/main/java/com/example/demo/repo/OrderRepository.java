@@ -1,9 +1,6 @@
 package com.example.demo.repo;
 
-import com.example.demo.models.Client;
-import com.example.demo.models.Order;
-import com.example.demo.models.Status;
-import com.example.demo.models.User;
+import com.example.demo.models.*;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.CrudRepository;
 
@@ -19,6 +16,7 @@ public interface OrderRepository extends JpaRepository<Order,Long> {
     Iterable<Order> findAllByGavedateBetween(Date date1,Date date2);
     Iterable<Order> findAllByDonedateBetween(Date date1,Date date2);
     Iterable<Order> findAllByClient(Client client);
+    Iterable<Order> findAllByTypesOfPayments(TypesOfPayments paymentType);
     /*Iterable<Order> findAllByDoneUserAndGavedateBetween(User user,Date date1,Date date2);*/
     /*Iterable<Order> getAllByAccepted_dateBetween(Date date1,Date date2);*/
 }

@@ -111,4 +111,16 @@ public class ProductController {
         productRepository.save(product);
         return "redirect:/products/"+product.getId();
     }
+
+    @GetMapping("/{productId}/history/incoming/{historyId}/delete")
+    public String deleteIncomingHistory(@PathVariable(value = "productId") long productId,@PathVariable(value = "historyId") long historyId,Model model){
+        IncomingHistory incomingHistory = incomingHistoryRepository.getById(historyId);
+        Storage storage = storageRepository.getAllByProductId(productId);
+        if(storage.getQuantity()>=incomingHistory.getQuantity()){
+            storage.setQuantity(storage.getQuantity()-incomingHistory.getQuantity());
+            incomingHistoryRepository.deleteById(historyId);
+            storageRepository.save(storage);
+        }
+        return "redirect:/products/"+productId+"/history/incoming";
+    }
 }

@@ -36,6 +36,7 @@
                     <th scope="col">Количество</th>
                     <th scope="col">Сумма</th>
                     <th scope="col">Дата</th>
+                    <th scope="col">Удалить</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -46,6 +47,7 @@
                     <td th:text="${el.quantity}"/>
                     <td th:text="${el.total}"/>
                     <td th:text="${el.getDateByFormat()}"/>
+                    <td><a th:href='${"/products/"+el.product.id+"/history/incoming/"+el.id+"/delete"}'><button class="btn btn-danger">Удалить</button></a></td>
                 </tr>
 
                 </tbody>

@@ -71,6 +71,7 @@
             <option th:value='${"/orders/"+orderOne.id+"/payment/cash"}'>Наличными</option>
             <option th:value='${"/orders/"+orderOne.id+"/payment/contract"}'>По Договору</option>
             <option th:value='${"/orders/"+orderOne.id+"/payment/online"}'>Перевод</option>
+            <option th:value='${"/orders/"+orderOne.id+"/payment/adverb"}'>Долг</option>
         </select>
         <br>
         <button th:if='${orderOne.status.toString().equals("WENTCASHIER")&&orderOne.typesOfPayments==null}' onclick="onInput()" type="button" class="btn btn-primary w-100">Выбрать</button>
