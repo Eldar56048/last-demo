@@ -395,4 +395,12 @@ public class Order {
         }
         return sum;
     }
+
+    public void deleteProductFromItems(Product product){
+        for(OrderItem orderItem:items){
+            if(orderItem.getProduct()!=null&&orderItem.getProduct().getId()==product.getId()){
+                items.remove(orderItem);
+            }
+        }
+    }
 }

@@ -10,12 +10,17 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Controller
 @RequestMapping("/products")
 @PreAuthorize("hasAuthority('MODERATOR')")
 public class ProductController {
+    @Autowired
+    private OrderRepository orderRepository;
+    @Autowired
+    private OrderItemRepository orderItemRepository;
     @Autowired
     private ProductRepository productRepository;
     @Autowired
@@ -75,8 +80,16 @@ public class ProductController {
     }
     @GetMapping("/{id}/remove")
     public String deleteProduct(@PathVariable(value = "id")long id,Model model) throws ClassNotFoundException {
-        Product product = productRepository.findById(id).orElseThrow(()-> new ClassNotFoundException());
+        Product product = productRepository.getAllById(id);
         Storage storage = storageRepository.getAllByProductId(product.getId());
+        incomingHistoryRepository.deleteAllByProduct(product);
+        recievingHistoryRepository.deleteAllByOrderItemProduct(product);
+        List<OrderItem> orderItems = orderItemRepository.getAllByProduct(product);
+        for(OrderItem orderItem:orderItems){
+            Order order = orderRepository.getAllById(orderItem.getOrder().getId());
+            order.getItems().remove(orderItem);
+            orderRepository.save(order);
+        }
         storageRepository.delete(storage);
         productRepository.delete(product);
         return "redirect:/products";

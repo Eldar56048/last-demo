@@ -5,10 +5,13 @@ import com.example.demo.models.Product;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 
 public interface IncomingHistoryRepository extends CrudRepository<IncomingHistory,Long> {
     Iterable<IncomingHistory> getAllByProductId(Long id);
     Iterable<IncomingHistory> getFirstByProductIdOrderByDateDesc(Long id);
     IncomingHistory getById(Long id);
+    @Transactional
+    void deleteAllByProduct(Product product);
 }

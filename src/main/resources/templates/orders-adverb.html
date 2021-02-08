@@ -35,7 +35,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="el:${orders}">
+                <tr  th:each="el:${orders}">
                     <!--                        <th scope="row" th:text="${el.id}"/>-->
                     <th><a th:text="${el.id}" th:href="@{/orders/}+${el.id}"/></th>
                     <td th:if="${el.client==null}" th:text="${el.name}"/>

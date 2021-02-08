@@ -242,13 +242,46 @@ public class OrderController {
     @PreAuthorize("hasAuthority('MODERATOR')")
     @GetMapping("/orders/{id}/remove")
     public String orderRemove(@PathVariable(value = "id") long id, Model model) throws ClassNotFoundException {
+        Order order = orderRepository.getAllById(id);
+        for(OrderItem orderItem:order.getItems()){
+            if (orderItem.getService() != null) {
+                order.removeOrderItemById(orderItem.getId());
+            } else {
+                order.removeOrderItemById(orderItem.getId());
+                RecievingHistory recievingHistory = recievingHistoryRepository.getAllByOrderItemId(orderItem.getId());
+                recievingHistoryRepository.deleteById(recievingHistory.getId());
+                Storage storage = storageRepository.getAllByProductId(orderItem.getProduct().getId());
+                storage.setQuantity(storage.getQuantity() + orderItem.getQuantity());
+                storageRepository.save(storage);
+            }
+        }
+        orderRepository.save(order);
         orderRepository.deleteById(id);
         return "redirect:/orders";
     }
 
-    @GetMapping("/orders/{id}/remove/{item_id}")
-    public String orderItemsRemove(@PathVariable(value = "id") long id, @PathVariable(value = "item_id") long item_id, Model model) throws ClassNotFoundException {
+    @GetMapping("/orders/{id}/remove/{item_id}/history")
+    public String orderItemsRemoveFromHistoryPage(@PathVariable(value = "id") long id, @PathVariable(value = "item_id") long item_id, Model model) throws ClassNotFoundException {
         Order order = orderRepository.findById(id).orElseThrow(() -> new ClassNotFoundException());
+        OrderItem orderItem = order.getOrderItemById(item_id);
+        if (orderItem.getService() != null) {
+            order.removeOrderItemById(item_id);
+            orderRepository.save(order);
+        } else {
+            order.removeOrderItemById(item_id);
+            RecievingHistory recievingHistory = recievingHistoryRepository.getAllByOrderItemId(orderItem.getId());
+            recievingHistoryRepository.deleteById(recievingHistory.getId());
+            Storage storage = storageRepository.getAllByProductId(orderItem.getProduct().getId());
+            storage.setQuantity(storage.getQuantity() + orderItem.getQuantity());
+            storageRepository.save(storage);
+            orderRepository.save(order);
+        }
+        return "redirect:/products/"+orderItem.getProduct().getId()+"/history/recieving";
+    }
+
+    @GetMapping("/orders/{id}/remove/{item_id}")
+    public String orderItemsRemoveFromOrderPage(@PathVariable(value = "id") long id, @PathVariable(value = "item_id") long item_id, Model model) throws ClassNotFoundException {
+        Order order = orderRepository.getAllById(id);
         OrderItem orderItem = order.getOrderItemById(item_id);
         if (orderItem.getService() != null) {
             order.removeOrderItemById(item_id);
@@ -264,6 +297,8 @@ public class OrderController {
         }
         return "redirect:/orders/" + order.getId();
     }
+
+
 
     @GetMapping("/orders/{id}/QRCode")
     public String getOrderQRCode(@PathVariable(value = "id") long id, Model model) {

@@ -67,6 +67,7 @@
                     <th scope="col">Наименование Продукта</th>
                     <th scope="col">Количество</th>
                     <th scope="col">Для какого заказа</th>
+                    <th scope="col">Удалить</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -74,8 +75,8 @@
                     <th><a style="color: white" th:text="${el.orderItem.product.product_name}" th:href="@{/products/}+${el.orderItem.product.id}"/></th>
                     <td th:text="${el.orderItem.quantity}"/>
                     <td><a style="color: white" th:text="${el.orderItem.order.id}" th:href="@{/orders/}+${el.orderItem.order.id}"/></td>
+                    <td><a th:href='${"/orders/"+el.orderItem.order.id+"/remove/"+el.orderItem.id+"/history"}'><button class="btn btn-danger">Удалить</button></a></td>
                 </tr>
-
                 </tbody>
             </table>
 
