@@ -104,6 +104,7 @@
                     <th scope="col">Выдал</th>
                     <th scope="col">Сумма</th>
                     <th scope="col">Способ оплаты</th>
+                    <th scope="col">Доход компаний</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -119,14 +120,16 @@
                     <td th:if='${el.typesOfPayments!=null&&el.typesOfPayments.toString().equals("contract")}' th:text='${"Договор"}'/>
                     <td th:if='${el.typesOfPayments!=null&&el.typesOfPayments.toString().equals("online")}' th:text='${"Онлайн Перевод"}'/>
                     <td th:if='${el.typesOfPayments!=null&&el.typesOfPayments.toString().equals("adverb")}' th:text='${"Долг"}'/>
+                    <td th:text="${orderService.getBossProportion(el.items)}"/>
                 </tr>
                 <tr>
                     <td>Итого:</td>
                     <td></td>
                     <td></td>
                     <td></td>
-                    <td id="result"></td>
+                    <td id="givenSumProportion"></td>
                     <td></td>
+                    <td id="givenBossProportion"></td>
                 </tr>
                 </tbody>
             </table>
@@ -146,7 +149,6 @@
                     <th scope="col">Когда Отдал</th>
                     <th scope="col">Кто Отдал</th>
                     <th scope="col">Доход Мастера</th>
-                    <th scope="col">Прибыль Компании</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -157,7 +159,7 @@
                     <td th:text="${el.getGaveDateByFormat()}"/>
                     <td><a th:text="${el.giveUser.fname}" th:href='${"/users/"+el.giveUser.id}'/></td>
                     <td th:text="${el.getMasterIdProportion(user.id)}"/>
-                    <td th:text="${orderService.getBossProportion(el.items)}"/>
+
                 </tr>
                 <tr>
                     <td>Сумма:</td>
@@ -165,7 +167,6 @@
                     <td></td>
                     <td></td>
                     <td id="val"/>
-                    <td id="boss"></td>
                 </tr>
                 </tbody>
             </table>
@@ -175,31 +176,30 @@
 
 </main>
 <footer th:insert="blocks/footer::footer"></footer>
-
 <script>
-    $(document).ready(function(){
-    var table = document.getElementById("table"), sumVal = 0.0, sumBoss = 0.0;
-    for(var i = 1; i < table.rows.length-1; i++)
-    {
-        sumVal = sumVal + parseFloat(table.rows[i].cells[4].innerHTML);
-        sumBoss = sumBoss + parseFloat(table.rows[i].cells[5].innerHTML);
-    }
-    document.getElementById("val").innerHTML = sumVal;
-    document.getElementById("boss").innerHTML = sumBoss;
-    console.log(sumVal);
 
-        var tableGiven = document.getElementById("givenTable"), sumVal = 0.0,sumBoss=0.0;
-        for(var i = 1; i < table.rows.length-1; i++)
-        {
-            sumVal = sumVal + parseFloat(table.rows[i].cells[4].innerHTML);
-            sumBoss = sumBoss + parseFloat(table.rows[i].cells[5].innerHTML);
+</script>
+<script>
+    $(document).ready(function() {
+        var table = document.getElementById("table"), sumVal = 0.0, sumBoss = 0.0;
+        if (table != null) {
+            for (var i = 1; i < table.rows.length - 1; i++) {
+                sumVal = sumVal + parseFloat(table.rows[i].cells[4].innerHTML);
+            }
+            document.getElementById("val").innerHTML = sumVal;
+            console.log(sumVal);
         }
-        document.getElementById("val").innerHTML = sumVal;
-        document.getElementById("boss").innerHTML = sumBoss;
-        console.log(sumVal);
+        var tableGiven = document.getElementById("givenTable"), sumVal = 0.0,sumBoss=0.0;
+        if(tableGiven!=null) {
+            for (var i = 1; i < tableGiven.rows.length - 1; i++) {
+                sumVal = sumVal + parseFloat(tableGiven.rows[i].cells[4].innerHTML);
+                sumBoss = sumBoss + parseFloat(tableGiven.rows[i].cells[6].innerHTML);
+            }
+            document.getElementById("givenSumProportion").innerHTML = sumVal;
+            document.getElementById("givenBossProportion").innerHTML = sumBoss;
+            console.log(sumVal);
+        }
     });
-
-
 
 </script>
 
