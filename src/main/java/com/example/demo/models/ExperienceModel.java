@@ -24,7 +24,7 @@ public class ExperienceModel {
     private Experience experience;
     private int coefficient;
     public ExperienceModel(){}
-    public ExperienceModel(Experience experience,int coefficient){
+    public ExperienceModel(Experience experience, int coefficient){
         this.experience = experience;
         this.coefficient = coefficient;
     }

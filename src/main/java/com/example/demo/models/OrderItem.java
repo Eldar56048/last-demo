@@ -37,7 +37,7 @@ public class OrderItem {
     public OrderItem(){
 
     }
-    public OrderItem(int quantity, Order order, Service service,User user) {
+    public OrderItem(int quantity, Order order, Service service, User user) {
         this.quantity = quantity;
         this.order = order;
         this.service = service;
@@ -46,7 +46,7 @@ public class OrderItem {
         this.soldPrice = service.getPrice();
         this.servicePercentage = service.getPercentage();
     }
-    public OrderItem(int quantity, Order order, Product product,User user,int last_price) {
+    public OrderItem(int quantity, Order order, Product product, User user, int last_price) {
         this.quantity = quantity;
         this.order = order;
         this.product = product;

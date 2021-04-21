@@ -5,16 +5,12 @@ import com.example.demo.models.Discount;
 import com.example.demo.models.Order;
 import com.example.demo.repo.ClientRepository;
 import com.example.demo.repo.DiscountRepository;
-import com.example.demo.repo.ModelRepository;
 import com.example.demo.repo.OrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.ArrayList;
-import java.util.Optional;
 
 @Controller
 @RequestMapping("/clients")

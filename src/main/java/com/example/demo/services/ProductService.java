@@ -1,7 +1,6 @@
 package com.example.demo.services;
 
 import com.example.demo.models.Storage;
-import com.example.demo.repo.ProductRepository;
 import com.example.demo.repo.StorageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;

@@ -1,6 +1,5 @@
 package com.example.demo.controllers;
 
-import com.example.demo.models.Order;
 import com.example.demo.models.Provider;
 import com.example.demo.repo.ProviderRepository;
 import org.springframework.beans.factory.annotation.Autowired;

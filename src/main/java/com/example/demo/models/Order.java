@@ -4,9 +4,6 @@ import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 
 import javax.persistence.*;
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.Table;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -49,14 +46,14 @@ public class Order {
     @JoinColumn(name = "give_user_id")
     private User giveUser;
     @Column(name = "accepted_date")
-    private java.util.Date accepteddate;
+    private Date accepteddate;
     @Column(name = "gave_date")
-    private java.util.Date gavedate;
+    private Date gavedate;
     @Column(name = "done_date")
-    private java.util.Date donedate;
+    private Date donedate;
     private int price;
     private Status status;
-    private TypesOfPayments typesOfPayments;
+    private com.example.demo.models.TypesOfPayments typesOfPayments;
     private Boolean notified;
     private String comment;
     private String modelCompany;
@@ -71,7 +68,7 @@ public class Order {
         this.number = number;
         this.problem = problem;
         this.acceptedUser = acceptedUser;
-        this.accepteddate = new java.util.Date();
+        this.accepteddate = new Date();
         this.status = Status.NOTDONE;
         this.type = type;
         this.model = model;
@@ -83,7 +80,7 @@ public class Order {
         this.number = number;
         this.problem = problem;
         this.acceptedUser = acceptedUser;
-        this.accepteddate = new java.util.Date();
+        this.accepteddate = new Date();
         this.status = Status.NOTDONE;
         this.type = type;
         this.model = model;
@@ -92,10 +89,10 @@ public class Order {
         this.discountPercent = discountPercent;
     }
 
-    public Order(Client client, String problem, User acceptedUser, Type type, Model model,String modelCompany) {
+    public Order(Client client, String problem, User acceptedUser, Type type, Model model, String modelCompany) {
         this.problem = problem;
         this.acceptedUser = acceptedUser;
-        this.accepteddate = new java.util.Date();
+        this.accepteddate = new Date();
         this.status = Status.NOTDONE;
         this.type = type;
         this.model = model;
@@ -355,11 +352,11 @@ public class Order {
         return false;
     }
 
-    public TypesOfPayments getTypesOfPayments() {
+    public com.example.demo.models.TypesOfPayments getTypesOfPayments() {
         return typesOfPayments;
     }
 
-    public void setTypesOfPayments(TypesOfPayments typesOfPayments) {
+    public void setTypesOfPayments(com.example.demo.models.TypesOfPayments typesOfPayments) {
         this.typesOfPayments = typesOfPayments;
     }
 
@@ -396,7 +393,7 @@ public class Order {
         return sum;
     }
 
-    public void deleteProductFromItems(Product product){
+    public void deleteProductFromItems(com.example.demo.models.Product product){
         for(OrderItem orderItem:items){
             if(orderItem.getProduct()!=null&&orderItem.getProduct().getId()==product.getId()){
                 items.remove(orderItem);

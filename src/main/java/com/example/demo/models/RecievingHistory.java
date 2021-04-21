@@ -1,12 +1,9 @@
 package com.example.demo.models;
 
 import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.*;
 import org.hibernate.annotations.Parameter;
 
 import javax.persistence.*;
-import javax.persistence.Entity;
-import javax.persistence.Table;
 
 @Entity
 @Table(name = "recievingHistory")

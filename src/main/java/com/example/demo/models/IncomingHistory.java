@@ -1,14 +1,10 @@
 package com.example.demo.models;
 
 import org.hibernate.annotations.GenericGenerator;
-
-import javax.persistence.*;
-import javax.persistence.Entity;
-import javax.persistence.Table;
-import java.text.SimpleDateFormat;
-import org.hibernate.annotations.*;
 import org.hibernate.annotations.Parameter;
 
+import javax.persistence.*;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 @Entity
