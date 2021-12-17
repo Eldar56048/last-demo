@@ -10,7 +10,7 @@
 <main role="main" class="row" style="border-bottom: 1px solid black; padding-bottom: 10px">
     <div class="col-4" style="text-align: center">
     <h1 style="font-size: small" th:text='${"QRCode заказа №"+order.id}' />
-    <img th:src='${"http://api.qrserver.com/v1/create-qr-code/?data=http://webportal-service.herokuapp.com/orders/"+order.id+"&size=100x100"}'>
+    <img th:src='${"http://api.qrserver.com/v1/create-qr-code/?data=http://192.168.1.112:8089/orders/"+order.id+"&size=100x100"}'>
     </div>
     <div class="col-8 row" style="border-left: 1px solid black;">
         <div class="w-100" style="text-align: center">
@@ -24,7 +24,7 @@
             <h1 th:if="${order.comment!=null}" style="font-size: small" th:text='${"Комментарии: "+order.comment}' />
         </div>
             <div class="col-4">
-                <img th:src='${"http://api.qrserver.com/v1/create-qr-code/?data=http://webportal-service.herokuapp.com/client/"+order.id+"&size=100x100"}'>
+                <img th:src='${"http://api.qrserver.com/v1/create-qr-code/?data=http://192.168.1.112:8089/client/"+order.id+"&size=100x100"}'>
             </div>
 
     </div>

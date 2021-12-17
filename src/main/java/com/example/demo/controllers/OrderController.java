@@ -426,6 +426,11 @@ public class OrderController {
                 break;
             case "contract":
                 typesOfPayments = TypesOfPayments.contract;
+                for(OrderItem orderItem : order.getItems()){
+                    if(orderItem.getService()!=null){
+                        orderItem.setServicePercentage(orderItem.getServicePercentage()-5);
+                    }
+                }
                 break;
             case "adverb":
                 typesOfPayments = TypesOfPayments.adverb;
@@ -464,6 +469,11 @@ public class OrderController {
                 break;
             case "contract":
                 order.setTypesOfPayments(TypesOfPayments.contract);
+                for(OrderItem orderItem : order.getItems()){
+                    if(orderItem.getService()!=null){
+                        orderItem.setServicePercentage(orderItem.getServicePercentage()-5);
+                    }
+                }
                 break;
             case "adverb":
                 order.setTypesOfPayments(TypesOfPayments.adverb);
